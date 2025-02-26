@@ -1,5 +1,6 @@
 import { enqueueSnackbar } from "notistack";
 import { IFetchError } from "@/types";
+import { log } from "console";
 
 interface Props {
   method: string;
@@ -38,6 +39,7 @@ const Fetch = async <TResponseData>({
     }
 
     const data = await response.json();
+    console.log('bai bai',data)
 
     if (process.env.NODE_ENV === "development") {
       console.log("Response Data Only Dev:", data);

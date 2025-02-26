@@ -10,9 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { DateRange } from "@mui/x-date-pickers-pro";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
+
 import { Controller, useForm } from "react-hook-form";
 import {
   RefObject,
@@ -37,8 +35,10 @@ import dayjs from "dayjs";
 import { countDaysByMonth } from "@/utils";
 import RoomRateAvailabilityCalendar from "./(components)/RoomCalendar";
 import Navbar from "@/components/Navbar";
-import useRoomRateAvailabilityCalendar from "./(hooks)/useRoomRateAvailabilityCalendar";
-
+import useRoomRateAvailabilityCalendar, { IResponse } from "./(hooks)/useRoomRateAvailabilityCalendar";
+import { DateRange } from "@mui/x-date-pickers-pro";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
 // Define the form type for the date range picker
 export type CalendarForm = {
   date_range: DateRange<dayjs.Dayjs>;
@@ -156,7 +156,13 @@ export default function Page() {
   }, [watchedDateRange]);
 
   // Fetch room rate availability calendar data
-  const room_calendar = useRoomRateAvailabilityCalendar({
+    const {
+    data,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+  } = useRoomRateAvailabilityCalendar({
     property_id: propertyId,
     start_date: watchedDateRange[0]!.format("YYYY-MM-DD"),
     end_date: (watchedDateRange[1]
@@ -164,6 +170,32 @@ export default function Page() {
       : watchedDateRange[0]!.add(2, "month")
     ).format("YYYY-MM-DD"),
   });
+
+ 
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (rootContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = rootContainerRef.current;
+
+        // যদি স্ক্রল রাইটে একদম শেষ পৌঁছায় তাহলে নতুন পেজ লোড করবো
+        if (scrollLeft + clientWidth >= scrollWidth - 10 && hasNextPage) {
+          fetchNextPage();
+        }
+
+        // যদি স্ক্রল লেফটে একদম প্রথম পৌঁছায় তাহলে আগের পেজ লোড করবো
+        if (scrollLeft <= 10 && hasPreviousPage) {
+          fetchPreviousPage();
+        }
+      }
+    };
+
+    const scrollContainer = rootContainerRef.current;
+    scrollContainer?.addEventListener("scroll", handleScroll);
+
+    return () => scrollContainer?.removeEventListener("scroll", handleScroll);
+  }, [fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage]);
+
 
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
@@ -356,23 +388,40 @@ export default function Page() {
             </Grid>
           </Grid>
 
-          {room_calendar.isSuccess
-            ? room_calendar.data.data.room_categories.map(
+     {/* {room_calendar.isSuccess
+            ? room_calendar.data.pages.room_categories.map(
                 (room_category, key) => (
                   <RoomRateAvailabilityCalendar
                     key={key}
                     index={key}
                     InventoryRefs={InventoryRefs}
                     isLastElement={
-                      key === room_calendar.data.data.room_categories.length - 1
+                      key === room_calendar.data.pages.room_categories.length - 1
                     }
                     room_category={room_category}
                     handleCalenderScroll={handleCalenderScroll}
                   />
                 )
               )
-            : null}
-          {room_calendar.isLoading && (
+            : null} */}
+          
+          {data &&
+  (data.pages as IResponse[])?.flatMap((page,pageIndex) => page?.room_categories || [])
+    .map((room_category, key) => (
+      <RoomRateAvailabilityCalendar
+        key={key}
+        index={key}
+        InventoryRefs={InventoryRefs}
+        // isLastElement={key === array.length + 1}
+         isLastElement={
+                      key === data.pages.room_categories.length + 1
+                    }
+        room_category={room_category}
+        handleCalenderScroll={handleCalenderScroll}
+      />
+    ))
+}
+          {data && (
             <Box
               sx={{
                 display: "flex",

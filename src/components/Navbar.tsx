@@ -23,6 +23,7 @@ const Navbar: React.FC = () => {
         />
         <div style={{ flexGrow: 1 }}></div>
         <Button color="inherit">Login</Button>
+        <button>React-query</button>
       </Toolbar>
     </AppBar>
   );
