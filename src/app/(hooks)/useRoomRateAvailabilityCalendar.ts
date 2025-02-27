@@ -86,13 +86,19 @@ export default function useRoomRateAvailabilityCalendar(params: IParams) {
 
   // Use React Query's useQuery hook to fetch data
   return useInfiniteQuery({
-    queryKey: ["users"],
+    queryKey: ["data"],
     queryFn: getCalender,
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      // যদি আর নতুন ডেটা না থাকে, তাহলে null ফেরত দেবে
-      if (!lastPage.assessment.length) return null;
-      return lastPage.prevOffset + 10; // পরবর্তী pageParam সেট করবে
-    },
+    // initialPageParam: 0,
+    // getNextPageParam: (lastPage) => {
+    //   // যদি আর নতুন ডেটা না থাকে, তাহলে null ফেরত দেবে
+    //   if (!lastPage.assessment.length) return null;
+    //   return lastPage.prevOffset + 10; // পরবর্তী pageParam সেট করবে
+    // },
+    getNextPageParam: lastPage => {
+      if (lastPage.prevOffset + 5 >= 100) {
+        return false;
+      }
+        return lastPage.prevOffset + 5;
+    }
   });
 };

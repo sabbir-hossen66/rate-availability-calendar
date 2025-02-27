@@ -2,6 +2,7 @@
 "use client";
 
 // Import necessary modules and components
+import InfiniteScroll from "react-infinite-scroll-component";
 import {
   Grid2 as Grid,
   Typography,
@@ -175,23 +176,6 @@ export default function Page() {
      });
   
   console.log("see the data", data?.pages[0]?.assessment?.room_categories);
-  
-  // add new handler for room_calendar
-    useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-        hasNextPage &&
-        !isFetchingNextPage
-      ) {
-        fetchNextPage();
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-  
 
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
@@ -383,23 +367,6 @@ export default function Page() {
               </AutoSizer>
             </Grid>
           </Grid>
-
-     {/* {room_calendar.isSuccess
-            ? room_calendar.data.data.room_categories.map(
-                (room_category, key) => (
-                  <RoomRateAvailabilityCalendar
-                    key={key}
-                    index={key}
-                    InventoryRefs={InventoryRefs}
-                    isLastElement={
-                      key === room_calendar.data.data.room_categories.length - 1
-                    }
-                    room_category={room_category}
-                    handleCalenderScroll={handleCalenderScroll}
-                  />
-                )
-              )
-            : null} */}
           
            {/* {data &&
   (data.pages as IResponse[])?.flatMap((page) => page?.room_categories || [])
@@ -418,7 +385,7 @@ export default function Page() {
     ))
 }  */}
           
-{data &&
+ {/* {data &&
   data.pages
     ?.flatMap((page) => page.assessment?.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
     .map((room_category, key, array) => (
@@ -429,9 +396,36 @@ export default function Page() {
         isLastElement={key === array.length - 1} // শেষ ইলিমেন্ট চেক করার সঠিক উপায়
         room_category={room_category}
         handleCalenderScroll={handleCalenderScroll}
+         
+      />
+    ))      
+          }  */}
+           
+
+          {/* add infintescroll */}
+             <InfiniteScroll
+        dataLength={data ? data?.length  : 0}
+        next={() => fetchNextPage()}
+        hasMore={hasNextPage}
+        loader={<div>Load more...</div>}
+
+      >
+{data &&
+  data.pages
+    ?.flatMap((page) => page.assessment?.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
+    .map((room_category, key, array) => (
+      <RoomRateAvailabilityCalendar
+        key={room_category.id} // index ব্যবহার না করে ইউনিক key দেওয়া ভালো
+        index={key}
+        InventoryRefs={InventoryRefs}
+        isLastElement={key === array.length + 1} // শেষ ইলিমেন্ট চেক করার সঠিক উপায়
+        room_category={room_category}
+        handleCalenderScroll={handleCalenderScroll}
       />
     ))
 }
+      </InfiniteScroll> 
+
 
 
           {data && (
