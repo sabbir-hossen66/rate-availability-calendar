@@ -1,3 +1,4 @@
+
 "use client";
 
 // Import necessary modules and components
@@ -7,10 +8,11 @@ import {
   Card,
   Box,
   Container,
-  CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
+import { DateRange } from "@mui/x-date-pickers-pro";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
 import { Controller, useForm } from "react-hook-form";
 import {
   RefObject,
@@ -35,10 +37,8 @@ import dayjs from "dayjs";
 import { countDaysByMonth } from "@/utils";
 import RoomRateAvailabilityCalendar from "./(components)/RoomCalendar";
 import Navbar from "@/components/Navbar";
-import useRoomRateAvailabilityCalendar, { IResponse } from "./(hooks)/useRoomRateAvailabilityCalendar";
-import { DateRange } from "@mui/x-date-pickers-pro";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
+import useRoomRateAvailabilityCalendar from "./(hooks)/useRoomRateAvailabilityCalendar";
+
 // Define the form type for the date range picker
 export type CalendarForm = {
   date_range: DateRange<dayjs.Dayjs>;
@@ -156,46 +156,41 @@ export default function Page() {
   }, [watchedDateRange]);
 
   // Fetch room rate availability calendar data
-    const {
+  /* 
+   {
     data,
     fetchNextPage,
     fetchPreviousPage,
     hasNextPage,
     hasPreviousPage,
-  } = useRoomRateAvailabilityCalendar({
+  } = useRoomRateAvailabilityCalendar
+  */
+     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useRoomRateAvailabilityCalendar({
     property_id: propertyId,
     start_date: watchedDateRange[0]!.format("YYYY-MM-DD"),
     end_date: (watchedDateRange[1]
       ? watchedDateRange[1]
       : watchedDateRange[0]!.add(2, "month")
     ).format("YYYY-MM-DD"),
-  });
-
- 
-
-  useEffect(() => {
+     });
+  
+  
+  // add new handler for room_calendar
+    useEffect(() => {
     const handleScroll = () => {
-      if (rootContainerRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = rootContainerRef.current;
-
-        // যদি স্ক্রল রাইটে একদম শেষ পৌঁছায় তাহলে নতুন পেজ লোড করবো
-        if (scrollLeft + clientWidth >= scrollWidth - 10 && hasNextPage) {
-          fetchNextPage();
-        }
-
-        // যদি স্ক্রল লেফটে একদম প্রথম পৌঁছায় তাহলে আগের পেজ লোড করবো
-        if (scrollLeft <= 10 && hasPreviousPage) {
-          fetchPreviousPage();
-        }
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+        hasNextPage &&
+        !isFetchingNextPage
+      ) {
+        fetchNextPage();
       }
     };
 
-    const scrollContainer = rootContainerRef.current;
-    scrollContainer?.addEventListener("scroll", handleScroll);
-
-    return () => scrollContainer?.removeEventListener("scroll", handleScroll);
-  }, [fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage]);
-
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  
 
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
@@ -389,14 +384,14 @@ export default function Page() {
           </Grid>
 
      {/* {room_calendar.isSuccess
-            ? room_calendar.data.pages.room_categories.map(
+            ? room_calendar.data.data.room_categories.map(
                 (room_category, key) => (
                   <RoomRateAvailabilityCalendar
                     key={key}
                     index={key}
                     InventoryRefs={InventoryRefs}
                     isLastElement={
-                      key === room_calendar.data.pages.room_categories.length - 1
+                      key === room_calendar.data.data.room_categories.length - 1
                     }
                     room_category={room_category}
                     handleCalenderScroll={handleCalenderScroll}
@@ -405,8 +400,8 @@ export default function Page() {
               )
             : null} */}
           
-          {data &&
-  (data.pages as IResponse[])?.flatMap((page,pageIndex) => page?.room_categories || [])
+           {/* {data &&
+  (data.pages as IResponse[])?.flatMap((page) => page?.room_categories || [])
     .map((room_category, key) => (
       <RoomRateAvailabilityCalendar
         key={key}
@@ -414,13 +409,29 @@ export default function Page() {
         InventoryRefs={InventoryRefs}
         // isLastElement={key === array.length + 1}
          isLastElement={
-                      key === data.pages.room_categories.length + 1
+                      key === data.pages.room_categories?.length + 1
                     }
         room_category={room_category}
         handleCalenderScroll={handleCalenderScroll}
       />
     ))
+}  */}
+          
+{data &&
+  data.pages
+    ?.flatMap((page) => page.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
+    .map((room_category, key, array) => (
+      <RoomRateAvailabilityCalendar
+        key={room_category.id} // index ব্যবহার না করে ইউনিক key দেওয়া ভালো
+        index={key}
+        InventoryRefs={InventoryRefs}
+        isLastElement={key === array.length - 1} // শেষ ইলিমেন্ট চেক করার সঠিক উপায়
+        room_category={room_category}
+        handleCalenderScroll={handleCalenderScroll}
+      />
+    ))
 }
+
           {data && (
             <Box
               sx={{
@@ -430,7 +441,7 @@ export default function Page() {
                 height: "100%",
               }}
             >
-              <CircularProgress />
+              {/* <CircularProgres /> */}
             </Box>
           )}
         </Card>
@@ -452,3 +463,4 @@ export default function Page() {
     </Container>
   );
 }
+
