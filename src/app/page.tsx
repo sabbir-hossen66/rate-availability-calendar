@@ -174,6 +174,7 @@ export default function Page() {
     ).format("YYYY-MM-DD"),
      });
   
+  console.log("see the data", data?.pages[0]?.assessment?.room_categories);
   
   // add new handler for room_calendar
     useEffect(() => {
@@ -419,7 +420,7 @@ export default function Page() {
           
 {data &&
   data.pages
-    ?.flatMap((page) => page.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
+    ?.flatMap((page) => page.assessment?.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
     .map((room_category, key, array) => (
       <RoomRateAvailabilityCalendar
         key={room_category.id} // index ব্যবহার না করে ইউনিক key দেওয়া ভালো
@@ -431,6 +432,7 @@ export default function Page() {
       />
     ))
 }
+
 
           {data && (
             <Box
