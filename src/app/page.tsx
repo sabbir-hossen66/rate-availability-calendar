@@ -360,30 +360,6 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
             </Grid>
           </Grid>
 
-{/* <InfiniteScroll
-  dataLength={data?.pages?.flatMap(page => page.assessment?.room_categories || []).length || 0}
-  next={fetchNextPage}
-  hasMore={hasNextPage} // Ensure this is logging correctly
-  loader={<div>Loading...</div>}
->
-  {data &&
-    data.pages.map((page, pageIndex) => (
-      <div key={pageIndex}>
-        {page.assessment?.room_categories?.map((room_category, key, array) => (
-          <RoomRateAvailabilityCalendar
-            key={room_category.id}
-            index={key}
-            InventoryRefs={InventoryRefs}
-            isLastElement={key === array.length - 1}
-            room_category={room_category}
-            handleCalenderScroll={handleCalenderScroll}
-          />
-        ))}
-      </div>
-    ))}
-</InfiniteScroll> */}
-
-
 <InfiniteScroll
   dataLength={data ? data.pages.length : 0}
   next={() => fetchNextPage()}
@@ -391,20 +367,21 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
   loader={<div>Loading...</div>}
 >
   {data &&
-    data.pages.map((page, pageIndex) => (
-      <div key={pageIndex}>
-        {page.assessment.map((room_category) => (
-          <RoomRateAvailabilityCalendar
-            key={room_category.id}
-            room_category={room_category}
-              InventoryRefs={InventoryRefs}
-            // isLastElement={key === array.length - 1}
-            // room_category={room_category}
-            handleCalenderScroll={handleCalenderScroll}
-          />
-        ))}
-      </div>
-    ))}
+  data.pages.map((page, pageIndex) => (
+    <div key={pageIndex}>
+      {page.assessment.map((room_category, index, array) => (
+        <RoomRateAvailabilityCalendar
+          key={room_category.id}
+          room_category={room_category}
+          InventoryRefs={InventoryRefs}
+          handleCalenderScroll={handleCalenderScroll}
+          index={index} 
+          isLastElement={index === array.length - 1}
+        />
+      ))}
+    </div>
+  ))}
+
 </InfiniteScroll>
 
 
