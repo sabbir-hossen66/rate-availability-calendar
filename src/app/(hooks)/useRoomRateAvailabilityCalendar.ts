@@ -76,16 +76,21 @@ export default function useRoomRateAvailabilityCalendar(params: IParams) {
     console.log("API Response:", res.data);
 
     return {
-      assessment: res.data.room_categories, // ডাটা
-      nextCursor: res.data.nextCursor ?? null, // API থেকে পাওয়া পরবর্তী cursor
+      assessment: res.data.room_categories, //data
+      nextCursor: res.data.nextCursor ?? null, //api theke pawa data
     };
   };
 
-  return useInfiniteQuery({
-    queryKey: ["roomRateCalendar", params.property_id], 
-    queryFn: getCalender,
-    initialPageParam: "0", // প্রথম পেজের জন্য cursor 0 সেট করা হলো
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? null, // পরবর্তী cursor সেট করা হচ্ছে
-  });
+ return useInfiniteQuery({
+  queryKey: ["roomRateCalendar", params.property_id], // Unique query key
+  queryFn: getCalender,
+  initialPageParam: 0, // Start from page 0
+  getNextPageParam: lastPage => lastPage.nextCursor ?? null, // Use cursor pagination properly
+  staleTime: 1000 * 60 * 5, // Cache data for 5 minutes (reduce network calls)
+  cacheTime: 1000 * 60 * 10, // Keep unused cache for 10 minutes
+  refetchOnWindowFocus: false, // Prevent refetch when user switches tabs
+  keepPreviousData: true, // Show previous data while fetching new data
+});
+
 }
 

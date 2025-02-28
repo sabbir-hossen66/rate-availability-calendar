@@ -157,8 +157,6 @@ export default function Page() {
   }, [watchedDateRange]);
 
   // Fetch room rate availability calendar data
-
-
 const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
   property_id: propertyId,
   start_date: watchedDateRange[0]!.format("YYYY-MM-DD"),
@@ -366,21 +364,19 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
   hasMore={!!hasNextPage}
   loader={<div>Loading...</div>}
 >
-  {data &&
-  data.pages.map((page, pageIndex) => (
-    <div key={pageIndex}>
-      {page.assessment.map((room_category, index, array) => (
-        <RoomRateAvailabilityCalendar
-          key={room_category.id}
-          room_category={room_category}
-          InventoryRefs={InventoryRefs}
-          handleCalenderScroll={handleCalenderScroll}
-          index={index} 
-          isLastElement={index === array.length - 1}
-        />
-      ))}
-    </div>
-  ))}
+ {data?.pages.flatMap((page) => 
+  page.assessment.map((room_category, index, array) => (
+    <RoomRateAvailabilityCalendar
+      key={room_category.id}
+      room_category={room_category}
+      InventoryRefs={InventoryRefs}
+      handleCalenderScroll={handleCalenderScroll}
+      index={index}
+      isLastElement={index === array.length - 1}
+    />
+  ))
+)}
+
 
 </InfiniteScroll>
 
