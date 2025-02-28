@@ -1,4 +1,3 @@
-
 "use client";
 
 // Import necessary modules and components
@@ -9,6 +8,7 @@ import {
   Card,
   Box,
   Container,
+  CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { DateRange } from "@mui/x-date-pickers-pro";
@@ -157,25 +157,17 @@ export default function Page() {
   }, [watchedDateRange]);
 
   // Fetch room rate availability calendar data
-  /* 
-   {
-    data,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-  } = useRoomRateAvailabilityCalendar
-  */
-     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useRoomRateAvailabilityCalendar({
-    property_id: propertyId,
-    start_date: watchedDateRange[0]!.format("YYYY-MM-DD"),
-    end_date: (watchedDateRange[1]
-      ? watchedDateRange[1]
-      : watchedDateRange[0]!.add(2, "month")
-    ).format("YYYY-MM-DD"),
-     });
-  
-  console.log("see the data", data?.pages[0]?.assessment?.room_categories);
+
+
+const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
+  property_id: propertyId,
+  start_date: watchedDateRange[0]!.format("YYYY-MM-DD"),
+  end_date: (watchedDateRange[1]
+    ? watchedDateRange[1]
+    : watchedDateRange[0]!.add(2, "month")
+  ).format("YYYY-MM-DD"),
+});
+console.log("see the data", data?.pages[0]?.assessment?.room_categories);
 
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
@@ -367,65 +359,53 @@ export default function Page() {
               </AutoSizer>
             </Grid>
           </Grid>
-          
-           {/* {data &&
-  (data.pages as IResponse[])?.flatMap((page) => page?.room_categories || [])
-    .map((room_category, key) => (
-      <RoomRateAvailabilityCalendar
-        key={key}
-        index={key}
-        InventoryRefs={InventoryRefs}
-        // isLastElement={key === array.length + 1}
-         isLastElement={
-                      key === data.pages.room_categories?.length + 1
-                    }
-        room_category={room_category}
-        handleCalenderScroll={handleCalenderScroll}
-      />
-    ))
-}  */}
-          
- {/* {data &&
-  data.pages
-    ?.flatMap((page) => page.assessment?.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
-    .map((room_category, key, array) => (
-      <RoomRateAvailabilityCalendar
-        key={room_category.id} // index ব্যবহার না করে ইউনিক key দেওয়া ভালো
-        index={key}
-        InventoryRefs={InventoryRefs}
-        isLastElement={key === array.length - 1} // শেষ ইলিমেন্ট চেক করার সঠিক উপায়
-        room_category={room_category}
-        handleCalenderScroll={handleCalenderScroll}
-         
-      />
-    ))      
-          }  */}
-           
 
-          {/* add infintescroll */}
-             <InfiniteScroll
-        dataLength={data ? data?.length  : 0}
-        next={() => fetchNextPage()}
-        hasMore={hasNextPage}
-        loader={<div>Load more...</div>}
+{/* <InfiniteScroll
+  dataLength={data?.pages?.flatMap(page => page.assessment?.room_categories || []).length || 0}
+  next={fetchNextPage}
+  hasMore={hasNextPage} // Ensure this is logging correctly
+  loader={<div>Loading...</div>}
+>
+  {data &&
+    data.pages.map((page, pageIndex) => (
+      <div key={pageIndex}>
+        {page.assessment?.room_categories?.map((room_category, key, array) => (
+          <RoomRateAvailabilityCalendar
+            key={room_category.id}
+            index={key}
+            InventoryRefs={InventoryRefs}
+            isLastElement={key === array.length - 1}
+            room_category={room_category}
+            handleCalenderScroll={handleCalenderScroll}
+          />
+        ))}
+      </div>
+    ))}
+</InfiniteScroll> */}
 
-      >
-{data &&
-  data.pages
-    ?.flatMap((page) => page.assessment?.room_categories || []) // প্রতিটি পেজ থেকে room_categories বের করা
-    .map((room_category, key, array) => (
-      <RoomRateAvailabilityCalendar
-        key={room_category.id} // index ব্যবহার না করে ইউনিক key দেওয়া ভালো
-        index={key}
-        InventoryRefs={InventoryRefs}
-        isLastElement={key === array.length + 1} // শেষ ইলিমেন্ট চেক করার সঠিক উপায়
-        room_category={room_category}
-        handleCalenderScroll={handleCalenderScroll}
-      />
-    ))
-}
-      </InfiniteScroll> 
 
+<InfiniteScroll
+  dataLength={data ? data.pages.length : 0}
+  next={() => fetchNextPage()}
+  hasMore={!!hasNextPage}
+  loader={<div>Loading...</div>}
+>
+  {data &&
+    data.pages.map((page, pageIndex) => (
+      <div key={pageIndex}>
+        {page.assessment.map((room_category) => (
+          <RoomRateAvailabilityCalendar
+            key={room_category.id}
+            room_category={room_category}
+              InventoryRefs={InventoryRefs}
+            // isLastElement={key === array.length - 1}
+            // room_category={room_category}
+            handleCalenderScroll={handleCalenderScroll}
+          />
+        ))}
+      </div>
+    ))}
+</InfiniteScroll>
 
 
           {data && (
@@ -437,7 +417,7 @@ export default function Page() {
                 height: "100%",
               }}
             >
-              {/* <CircularProgres /> */}
+              {/* <CircularProgress /> */}
             </Box>
           )}
         </Card>
@@ -459,4 +439,3 @@ export default function Page() {
     </Container>
   );
 }
-

@@ -13,12 +13,13 @@ import { memo, RefObject, useMemo, useRef } from "react";
 import { styled } from "@mui/material/styles";
 import RoomRateCell from "./RateCell";
 import RoomRateRestrictionsCell from "./RestrictionsCell";
-import {
+import  {
   IRateCalendar,
   IRoomCategoryCalender,
   IRoomInventory,
 } from "../(hooks)/useRoomRateAvailabilityCalendar";
 import { Person } from "@mui/icons-material";
+
 
 // Define the props for the RoomRateAvailabilityCalendar component
 interface IProps {
@@ -222,9 +223,11 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
           },
         }
   );
+  
 
   return (
     <>
+      
       <Grid container sx={{ py: 4, px: 4 }}>
         <Grid size={10}>
           <Typography

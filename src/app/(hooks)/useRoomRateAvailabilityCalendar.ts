@@ -1,7 +1,9 @@
+// Import necessary modules and types
 import Fetch from "@/utils/Fetch";
 import { useInfiniteQuery } from "@tanstack/react-query";
-// import {  useQuery } from "@tanstack/react-query";
 import { Dayjs } from "dayjs";
+
+// ToDo: Add infinite query support
 
 // Define interfaces for the data structures used in the calendar
 export interface IRoomInventory {
@@ -40,65 +42,50 @@ export interface IRoomCategoryCalender extends IRoomCategory {
   rate_plans: Array<IRatePlanCalendar>;
 }
 
-// Define parameters and response interfaces
-export interface IParams {
+// Define the parameters and response interfaces for the hook
+interface IParams {
   property_id: number;
   start_date: string;
   end_date: string;
 }
 
-export interface IResponse {
+interface IResponse {
   room_categories: Array<IRoomCategoryCalender>;
-  nextCursor?: number; // Available if pagination is supported
-  prevCursor?: number; // Added previous cursor for bidirectional pagination
-  length?: number; // Added length for total number of records
+  nextCursor?: number; // available if you pass a cursor as query param
 }
 
-// Custom hook using `useInfiniteQuery`
+// Custom hook to fetch room rate availability calendar data
 export default function useRoomRateAvailabilityCalendar(params: IParams) {
-
- /*   const url = new URL(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/property/${params.property_id}/rate-calendar/assessment`
-    ); */
-
-  // `getCalender` ফাংশনে URLSearchParams যোগ করা হলো
-  const getCalender = async ({ pageParam = 0 }) => {
+  const getCalender = async ({ pageParam = "0" }) => {
     const url = new URL(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/property/${params.property_id}/rate-calendar/assessment`
     );
 
-    // Query parameters যুক্ত করা হলো
     url.search = new URLSearchParams({
       start_date: params.start_date,
       end_date: params.end_date,
+      cursor: pageParam, // Cursor-based pagination
       _limit: "10",
-      _start: pageParam.toString(), // Number কে String এ কনভার্ট করা হলো
     }).toString();
 
-    // Fetch দিয়ে API কল করা হচ্ছে
     const res = await Fetch<IResponse>({
       method: "GET",
-      url: url.toString(), // `url` কে string এ convert করে পাঠাতে হবে
+      url: url.toString(),
     });
-  console.log("API Response33:", res.data);
-    return { assessment: res.data, prevOffset: pageParam };
+
+    console.log("API Response:", res.data);
+
+    return {
+      assessment: res.data.room_categories, // ডাটা
+      nextCursor: res.data.nextCursor ?? null, // API থেকে পাওয়া পরবর্তী cursor
+    };
   };
 
-  // Use React Query's useQuery hook to fetch data
   return useInfiniteQuery({
-    queryKey: ["data"],
+    queryKey: ["roomRateCalendar", params.property_id], 
     queryFn: getCalender,
-    // initialPageParam: 0,
-    // getNextPageParam: (lastPage) => {
-    //   // যদি আর নতুন ডেটা না থাকে, তাহলে null ফেরত দেবে
-    //   if (!lastPage.assessment.length) return null;
-    //   return lastPage.prevOffset + 10; // পরবর্তী pageParam সেট করবে
-    // },
-    getNextPageParam: lastPage => {
-      if (lastPage.prevOffset + 5 >= 100) {
-        return false;
-      }
-        return lastPage.prevOffset + 5;
-    }
+    initialPageParam: "0", // প্রথম পেজের জন্য cursor 0 সেট করা হলো
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? null, // পরবর্তী cursor সেট করা হচ্ছে
   });
-};
+}
+
