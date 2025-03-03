@@ -39,6 +39,8 @@ import { countDaysByMonth } from "@/utils";
 import RoomRateAvailabilityCalendar from "./(components)/RoomCalendar";
 import Navbar from "@/components/Navbar";
 import useRoomRateAvailabilityCalendar from "./(hooks)/useRoomRateAvailabilityCalendar";
+import FormWithDatePicker from "./(components)/FormWithDatePicker";
+
 
 
 
@@ -274,7 +276,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
               </Typography>
             </Grid>
 
-            <Grid size={4}>
+            {/* <Grid size={4}>
               <Controller
                 name="date_range"
                 control={control}
@@ -298,7 +300,9 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                   />
                 )}
               />
-            </Grid>
+            </Grid>  */}
+           <FormWithDatePicker/>
+            
           </Grid>
         </Card>
         <Card elevation={1} sx={{ my: 6, padding: 3 }} ref={rootContainerRef}>
