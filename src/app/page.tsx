@@ -8,8 +8,8 @@ import {
   Card,
   Box,
   Container,
-  CircularProgress,
 } from "@mui/material";
+
 import { useTheme } from "@mui/material/styles";
 import { DateRange } from "@mui/x-date-pickers-pro";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
@@ -40,6 +40,8 @@ import RoomRateAvailabilityCalendar from "./(components)/RoomCalendar";
 import Navbar from "@/components/Navbar";
 import useRoomRateAvailabilityCalendar from "./(hooks)/useRoomRateAvailabilityCalendar";
 
+
+
 // Define the form type for the date range picker
 export type CalendarForm = {
   date_range: DateRange<dayjs.Dayjs>;
@@ -65,7 +67,7 @@ export default function Page() {
   const calenderDatesRef = useRef<FixedSizeGrid | null>(null);
   const mainGridContainerRef = useRef<HTMLDivElement | null>(null);
   const InventoryRefs = useRef<Array<RefObject<VariableSizeGrid>>>([]);
-
+ //const loadMoreRef = useRef(null);
   // Handle horizontal scroll for dates
   const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     InventoryRefs.current.forEach((ref) => {
@@ -77,6 +79,9 @@ export default function Page() {
       calenderMonthsRef.current.scrollTo(scrollLeft);
     }
   }, []);
+
+
+
 
   // Handle horizontal scroll for the entire calendar
   const handleCalenderScroll = useCallback(
@@ -95,6 +100,8 @@ export default function Page() {
     },
     []
   );
+
+
 
   // Add event listener for wheel scroll to handle horizontal scrolling
   useEffect(() => {
@@ -156,6 +163,7 @@ export default function Page() {
     setCalenderDates(dates);
   }, [watchedDateRange]);
 
+
   // Fetch room rate availability calendar data
 const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
   property_id: propertyId,
@@ -165,7 +173,27 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
     : watchedDateRange[0]!.add(2, "month")
   ).format("YYYY-MM-DD"),
 });
-console.log("see the data", data?.pages[0]?.assessment?.room_categories);
+  //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
+
+
+// IntersectionObserver দিয়ে স্ক্রলের আগেই ডাটা লোড করুন
+// useEffect(() => {
+//   const observer = new IntersectionObserver(
+//     entries => {
+//       if (entries[0].isIntersecting) {
+//         fetchNextPage();
+//       }
+//     },
+//     { threshold: 0.4 } // পেজের 50% দেখা যাওয়ার আগেই লোড শুরু করুন
+//   );
+  
+//   if (loadMoreRef.current) {
+//     observer.observe(loadMoreRef.current);
+//   }
+  
+//   return () => observer.disconnect();
+// }, [fetchNextPage]);
+
 
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
@@ -220,8 +248,8 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
             borderColor: theme.palette.divider,
           }}
         >
-          <Box>{calenderDates[columnIndex].format("ddd")}</Box>
-          <Box>{calenderDates[columnIndex].format("DD")}</Box>
+          <Box>{calenderDates[columnIndex]?.format("ddd")}</Box>
+          <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
         </Box>
       </Box>
     );
@@ -350,6 +378,7 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
                     ref={calenderDatesRef}
                     outerRef={mainGridContainerRef}
                     onScroll={handleDatesScroll}
+
                   >
                     {DateRow}
                   </FixedSizeGrid>
@@ -358,14 +387,23 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
             </Grid>
           </Grid>
 
-<InfiniteScroll
-  dataLength={data ? data.pages.length : 0}
+  {
+            
+  <InfiniteScroll
+  dataLength={data ? data?.pages?.length : 0}           
   next={() => fetchNextPage()}
-  hasMore={!!hasNextPage}
-  loader={<div>Loading...</div>}
+  hasMore={hasNextPage}
+  loader={
+    hasNextPage ? (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100px" sx={{ color: "green" }}>
+        Loading More data... Please wait..
+      </Box>
+    ) : null
+  }       
+scrollThreshold={0.8} // Trigger data load earlier (80% scroll)
 >
- {data?.pages.flatMap((page) => 
-  page.assessment.map((room_category, index, array) => (
+ {data?.pages?.flatMap((page) =>
+  page?.assessment?.map((room_category, index, array) => (
     <RoomRateAvailabilityCalendar
       key={room_category.id}
       room_category={room_category}
@@ -375,25 +413,11 @@ console.log("see the data", data?.pages[0]?.assessment?.room_categories);
       isLastElement={index === array.length - 1}
     />
   ))
+   
 )}
+ </InfiniteScroll>
 
-
-</InfiniteScroll>
-
-
-          {data && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              {/* <CircularProgress /> */}
-              {/* <p>Loading for sometimes...</p> */}
-            </Box>
-          )}
+   }
         </Card>
       </Box>
       <Box

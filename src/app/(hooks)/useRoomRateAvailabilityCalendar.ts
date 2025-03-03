@@ -56,41 +56,44 @@ interface IResponse {
 
 // Custom hook to fetch room rate availability calendar data
 export default function useRoomRateAvailabilityCalendar(params: IParams) {
-  const getCalender = async ({ pageParam = "0" }) => {
+  const getCalender = async ({ pageParam = 0 }) => {
+    console.log(`Loading page with cursor: ${pageParam}`);
+    const startTime = Date.now();
+    
     const url = new URL(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/property/${params.property_id}/rate-calendar/assessment`
     );
-
+    
     url.search = new URLSearchParams({
       start_date: params.start_date,
       end_date: params.end_date,
-      cursor: pageParam, // Cursor-based pagination
-      _limit: "10",
+      cursor: pageParam.toString(),
+      _limit: "40", // একবারে আরও বেশি আইটেম লোড করুন
     }).toString();
-
+    
     const res = await Fetch<IResponse>({
       method: "GET",
       url: url.toString(),
     });
-
-    console.log("API Response:", res.data);
-
+    
+    console.log(`Page loaded in ${Date.now() - startTime}ms`);
+    
     return {
-      assessment: res.data.room_categories, //data
-      nextCursor: res.data.nextCursor ?? null, //api theke pawa data
+      assessment: res.data?.room_categories,
+      nextCursor: res.data?.nextCursor ?? undefined,
+      hasMore: res.data?.nextCursor !== null && res.data?.nextCursor !== undefined
     };
   };
-
- return useInfiniteQuery({
-  queryKey: ["roomRateCalendar", params.property_id], // Unique query key
-  queryFn: getCalender,
-  initialPageParam: 0, // Start from page 0
-  getNextPageParam: lastPage => lastPage.nextCursor ?? null, // Use cursor pagination properly
-  staleTime: 1000 * 60 * 5, // Cache data for 5 minutes (reduce network calls)
-  cacheTime: 1000 * 60 * 10, // Keep unused cache for 10 minutes
-  refetchOnWindowFocus: false, // Prevent refetch when user switches tabs
-  keepPreviousData: true, // Show previous data while fetching new data
-});
-
+  
+  return useInfiniteQuery({
+    queryKey: ["roomRateCalendar", params.property_id, params.start_date, params.end_date],
+    queryFn: getCalender,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    staleTime: 1000 * 60 * 30, // 30 মিনিট ক্যাশ ডাটা রাখুন
+    gcTime: 1000 * 60 * 60, // 60 মিনিট ক্যাশ ডাটা রাখুন
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 1,
+  });
 }
-
