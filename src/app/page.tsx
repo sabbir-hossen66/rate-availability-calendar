@@ -51,14 +51,16 @@ export type CalendarForm = {
 const StyledVariableSizeList = styled(VariableSizeList)({
   scrollbarWidth: "none",
   msOverflowStyle: "none",
+  scrollBehavior: "smooth", // Smooth scrolling
+  overflowX: "auto", // Ensure horizontal scroll
   "&::-webkit-scrollbar": {
     display: "none",
   },
 });
 
+
 export default function Page() {
   const theme = useTheme(); // Get the theme for styling
-
   const propertyId = 1; // Example property ID
 
   // Refs for various elements to handle scrolling
@@ -67,7 +69,7 @@ export default function Page() {
   const calenderDatesRef = useRef<FixedSizeGrid | null>(null);
   const mainGridContainerRef = useRef<HTMLDivElement | null>(null);
   const InventoryRefs = useRef<Array<RefObject<VariableSizeGrid>>>([]);
- //const loadMoreRef = useRef(null);
+
   // Handle horizontal scroll for dates
   const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     InventoryRefs.current.forEach((ref) => {
@@ -163,6 +165,19 @@ export default function Page() {
     setCalenderDates(dates);
   }, [watchedDateRange]);
 
+      const handleMonthScroll = (e) => {
+  // Get the horizontal scroll position of the months list
+  const scrollLeft = e.target.scrollLeft;
+
+  // Now apply that scroll position to the dates grid
+  if (calenderDatesRef.current) {
+    calenderDatesRef.current.scrollTo({
+      left: scrollLeft, // Sync the horizontal scroll position
+      behavior: 'smooth', // Optional: add smooth scroll effect
+    });
+  }
+};
+
 
   // Fetch room rate availability calendar data
 const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
@@ -176,31 +191,15 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
   //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
 
 
-// IntersectionObserver দিয়ে স্ক্রলের আগেই ডাটা লোড করুন
-// useEffect(() => {
-//   const observer = new IntersectionObserver(
-//     entries => {
-//       if (entries[0].isIntersecting) {
-//         fetchNextPage();
-//       }
-//     },
-//     { threshold: 0.4 } // পেজের 50% দেখা যাওয়ার আগেই লোড শুরু করুন
-//   );
-  
-//   if (loadMoreRef.current) {
-//     observer.observe(loadMoreRef.current);
-//   }
-  
-//   return () => observer.disconnect();
-// }, [fetchNextPage]);
-
-
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
     index,
     style,
   }) {
     const month = calenderMonths[index][0];
+
+
+
 
     return (
       <Box style={style}>
@@ -322,6 +321,12 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 lg: 10,
                 xl: 10,
               }}
+                sx={{
+    overflowX: 'auto', // Enable horizontal scroll
+                  whiteSpace: 'nowrap', // Prevent wrapping of content inside  
+      scrollBehavior: 'smooth', 
+              }}
+                onScroll={handleMonthScroll}
             >
               <AutoSizer disableHeight>
                 {({ width }) => (
@@ -365,14 +370,19 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 lg: 10,
                 xl: 10,
               }}
+                sx={{
+    overflowX: 'auto', // Enable horizontal scroll
+   whiteSpace: 'nowrap', // Prevent wrapping
+      scrollBehavior: 'smooth', 
+  }}
             >
               <AutoSizer>
                 {({ height, width }) => (
                   <FixedSizeGrid
                     height={height}
                     width={width}
-                    columnCount={calenderDates.length}
-                    columnWidth={74}
+                    columnCount={Math.min(10, calenderDates.length)}
+                    columnWidth={150}
                     rowCount={1}
                     rowHeight={37}
                     ref={calenderDatesRef}
@@ -400,7 +410,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
       </Box>
     ) : null
   }       
-scrollThreshold={0.8} // Trigger data load earlier (80% scroll)
+scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
 >
  {data?.pages?.flatMap((page) =>
   page?.assessment?.map((room_category, index, array) => (

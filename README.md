@@ -120,3 +120,8 @@ You can find a working Postman collection for this API [here](https://www.postma
 - Feel free to reach out if you have any questions or need further clarification on the requirements.
 
 Good luck, and we look forward to reviewing your implementation!
+
+######  তুমি handleCalenderScroll এবং handleDatesScroll ফাংশন ব্যবহার করছো, যা একসাথে multiple refs (যেমন: InventoryRefs.current, calenderMonthsRef.current, calenderDatesRef.current) স্ক্রল করাচ্ছে।
+যখনই ইউজার স্ক্রল করে, তখন একসাথে অনেকগুলো DOM element update হচ্ছে, যার কারণে পারফরম্যান্স ড্রপ করছে।
+
+##### handleCalenderScroll এবং handleDatesScroll এ সরাসরি scrollTo কল করছো, যেটা ল্যাগি করে।
