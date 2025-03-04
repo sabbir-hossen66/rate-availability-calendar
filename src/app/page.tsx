@@ -42,8 +42,6 @@ import useRoomRateAvailabilityCalendar from "./(hooks)/useRoomRateAvailabilityCa
 import FormWithDatePicker from "./(components)/FormWithDatePicker";
 
 
-
-
 // Define the form type for the date range picker
 export type CalendarForm = {
   date_range: DateRange<dayjs.Dayjs>;
@@ -277,31 +275,6 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
               </Typography>
             </Grid>
 
-            {/* <Grid size={4}>
-              <Controller
-                name="date_range"
-                control={control}
-                rules={{
-                  required: "Please specify a date range.",
-                }}
-                render={({ field, fieldState: { invalid, error } }) => (
-                  <DateRangePicker
-                    {...field}
-                    autoFocus
-                    minDate={dayjs()}
-                    maxDate={dayjs().add(2, "year")}
-                    slots={{ field: SingleInputDateRangeField }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: invalid,
-                        helperText: invalid ? error?.message : null,
-                      },
-                    }}
-                  />
-                )}
-              />
-            </Grid>  */}
        <FormWithDatePicker/>
             
           </Grid>

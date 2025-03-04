@@ -219,21 +219,6 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
     },
     areEqual
   );
-
-  // Style the VariableSizeGrid to hide the scrollbar if it's not the last element
-
-  // const StyledVariableSizeGrid = styled(VariableSizeGrid)(
-  //   props.isLastElement
-  //     ? {}
-  //     : {
-  //         scrollbarWidth: "none",
-  //         msOverflowStyle: "none",
-  //         "&::-webkit-scrollbar": {
-  //           display: "none",
-  //         },
-  //       }
-  // );
-  
   
 const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
   (props) => ({
