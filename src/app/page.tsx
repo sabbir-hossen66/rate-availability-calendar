@@ -175,7 +175,7 @@ const handleMonthScroll = (e: React.UIEvent<HTMLDivElement>) => {
   if (calenderDatesRef.current) {
     calenderDatesRef.current.scrollTo({
       scrollLeft, // Corrected property name
-      behavior: "smooth", // Optional: add smooth scroll effect
+      //behavior: "smooth", // Optional: add smooth scroll effect
     });
   }
 };
