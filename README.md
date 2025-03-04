@@ -24,7 +24,8 @@ npm install react-infinite-scroll-component
 
 For this example 
 
-```const {
+```
+const {
     data,
     fetchNextPage,
     hasNextPage,
@@ -42,3 +43,14 @@ For this example
     </infineScroll>
   )
   ```
+"For the data to be displayed quickly in the UI, you can add the following methods under the queryFn..."
+
+```
+staleTime: 1000 * 60 * 30, // Keep cached data for 30 minutes
+gcTime: 1000 * 60 * 60, // Keep cached data for 60 minutes
+refetchOnWindowFocus: false, // Disable refetching when the window is focused
+refetchOnMount: false, // Disable refetching when the component is mounted
+retry: 1, // Retry the query once in case of failure
+
+```
+
