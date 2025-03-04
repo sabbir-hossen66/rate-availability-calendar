@@ -2,8 +2,8 @@
 
 ## Live Demo & Repository  
 
-🔗 **Live Site:** [Your Live Site Link Here](https://rate-availability-calendar-pa3x1vda1.vercel.app/)  
-📂 **GitHub Repository:** [Your GitHub Repo Link Here](#)  
+🔗 **Live Site:** [Click Here](https://rate-availability-calendar-pa3x1vda1.vercel.app/)  
+📂 **GitHub Repository:** [Click Here](https://github.com/sabbir-hossen66/rate-availability-calendar/tree/infine-scroll-sabbir?tab=readme-ov-file)  
 
 This project implements an infinite scroll feature vertically using TanStack Query (`@tanstack/react-query`) and the `react-infinite-scroll-component`. The infinite scroll allows users to seamlessly load more items as they scroll down the page. and Optimize the Horizontal scroll behavior to ensure it is smooth and responsive.
 
