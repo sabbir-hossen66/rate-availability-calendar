@@ -89,8 +89,8 @@ In Page.tsx Inside Grid Added this for smooth behavior
       scrollBehavior: 'smooth', 
 ```
 
-# For Horizontal Scrolling behavior 
-![Table Image]([public/image.png](https://i.ibb.co.com/xKwjnCdh/table.png))
+# How to scroll Horizontally 
+![Rate Availability Calendar](https://i.ibb.co.com/xKwjnCdh/table.png)
 -**In this table, you can left-click and drag the mouse to the right to scroll horizontally.**
 
 ## Update DateChangePicker 
