@@ -102,6 +102,7 @@ Follow these steps to clone and set up the project locally:
 ### 1️⃣ Clone the Repository  
 ```sh
 git clone https://github.com/sabbir-hossen66/rate-availability-calendar.git
+```
 cd rate-availability-calendar
 
 2️⃣ Install Dependencies
@@ -111,7 +112,6 @@ npm install
 # or
 yarn install
 ```
-
 
 3️⃣ Configure Environment Variables
 Create a .env.local file in the root directory and add the following:
