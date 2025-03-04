@@ -49,6 +49,7 @@ interface CustomGridProps extends VariableSizeGridProps  {
 
 
 
+
 // Component to render the room rate availability calendar
 export default function RoomRateAvailabilityCalendar(props: IProps) {
   const theme = useTheme(); // Get the theme for styling
@@ -239,19 +240,21 @@ const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
     overflowX: "auto",
     scrollBehavior: "smooth", // Enables smooth scrolling
     scrollbarWidth: "none",
-    msOverflowStyle: "none",
+   msOverflowStyle: "none",
     "&::-webkit-scrollbar": {
       display: "none",
     },
     ...(props.isLastElement
       ? {}
-      : {
+      :
+      {
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           "&::-webkit-scrollbar": {
             display: "none",
           },
-        }),
+      }
+    ),
   })
 );
 

@@ -2,7 +2,7 @@
 
 This project implements an infinite scroll feature vertically using TanStack Query (`@tanstack/react-query`) and the `react-infinite-scroll-component`. The infinite scroll allows users to seamlessly load more items as they scroll down the page. and Optimize the Horizontal scroll behavior to ensure it is smooth and responsive.
 
-## Update features for varically scroll -
+## Update features for varically scroll 
 Instead of useQuery, I have used useInfiniteQuery and installed the InfiniteScroll component, and placed the data being displayed in the UI inside the InfiniteScroll component.
 
 ## Features
@@ -61,5 +61,22 @@ retry: 1, // Retry the query once in case of failure
 
 ```
 
-## Update features for Horizontal scroll -
-In the page.tsx file, I set columnCount to 10 and columnWidth to 150 inside the AutoSizer. In the RoomCalendar.tsx file, I updated the -**StyledVariableSizeGrid** to allow smooth horizontal scrolling. Additionally, I enabled the scrollbar and when the mouse left button is triggered and moved left or right, the data will show smoothly without any lag.
+## Update features for Horizontal scroll 
+In the page.tsx file, I set columnCount to 10 and columnWidth to 150 inside the AutoSizer. In the RoomCalendar.tsx file, I updated the **StyledVariableSizeGrid** to allow smooth horizontal scrolling. Additionally, I enabled the scrollbar and when the mouse left button is triggered and moved left or right, the data will show smoothly without any lag.
+
+I have added the following properties under the StyledVariableSizeGrid variable to enable smooth horizontal scrolling:
+
+```
+overflowX: "auto", // Enables horizontal scrolling
+scrollBehavior: "smooth", // Enables smooth scrolling
+scrollbarWidth: "none", // Hides the scrollbar
+msOverflowStyle: "none", // Hides the scrollbar for IE/Edge
+"&::-webkit-scrollbar": {
+  display: "none", // Hides the scrollbar in WebKit browsers
+},
+
+```
+
+## Update DateChangePicker 
+I have created a file named FormWithDatePicker for the date picker functionality. It is optimized for smooth performance, and I have imported it into the page.tsx file.
+
