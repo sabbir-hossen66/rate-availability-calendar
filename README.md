@@ -89,6 +89,10 @@ In Page.tsx Inside Grid Added this for smooth behavior
       scrollBehavior: 'smooth', 
 ```
 
+# For Horizontal Scrolling behavior 
+![Table Image]([public/image.png](https://i.ibb.co.com/xKwjnCdh/table.png))
+-**In this table, you can left-click and drag the mouse to the right to scroll horizontally.**
+
 ## Update DateChangePicker 
 I have created a file named FormWithDatePicker for the date picker functionality. It is optimized for smooth performance, and I have imported it into the page.tsx file.
 
