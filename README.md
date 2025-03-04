@@ -2,7 +2,7 @@
 
 ## Live Demo & Repository  
 
-🔗 **Live Site:** [Click Here](https://rate-availability-calendar-pa3x1vda1.vercel.app/)  
+🔗 **Live Site:** [Click Here](https://rate-availability-calendar-silk.vercel.app/)  
 📂 **GitHub Repository:** [Click Here](https://github.com/sabbir-hossen66/rate-availability-calendar/tree/infine-scroll-sabbir?tab=readme-ov-file)  
 
 ### My GitHub Branch name is " infine-scroll-sabbir "
