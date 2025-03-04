@@ -68,7 +68,7 @@ export default function useRoomRateAvailabilityCalendar(params: IParams) {
       start_date: params.start_date,
       end_date: params.end_date,
       cursor: pageParam.toString(),
-      _limit: "40", // একবারে আরও বেশি আইটেম লোড করুন
+      _limit: "40", 
     }).toString();
     
     const res = await Fetch<IResponse>({
@@ -90,8 +90,8 @@ export default function useRoomRateAvailabilityCalendar(params: IParams) {
     queryFn: getCalender,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    staleTime: 1000 * 60 * 30, // 30 মিনিট ক্যাশ ডাটা রাখুন
-    gcTime: 1000 * 60 * 60, // 60 মিনিট ক্যাশ ডাটা রাখুন
+    staleTime: 1000 * 60 * 30,
+    gcTime: 1000 * 60 * 60, 
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     retry: 1,

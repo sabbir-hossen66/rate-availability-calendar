@@ -82,9 +82,46 @@ msOverflowStyle: "none", // Hides the scrollbar for IE/Edge
 
 ```
 
+In Page.tsx Inside Grid Added this for smooth behavior
+```
+   overflowX: 'auto', // Enable horizontal scroll
+   whiteSpace: 'nowrap', // Prevent wrapping
+      scrollBehavior: 'smooth', 
+```
+
 ## Update DateChangePicker 
 I have created a file named FormWithDatePicker for the date picker functionality. It is optimized for smooth performance, and I have imported it into the page.tsx file.
 
 ### For OptimizedIntegrations and facing challenge : 
 
 I tried to implement debounce,throttle from lodash. but it'd didn't work for horizontally At that time, I fixed it in a different way, as described above.
+
+
+Follow these steps to clone and set up the project locally:  
+
+### 1️⃣ Clone the Repository  
+```sh
+git clone https://github.com/sabbir-hossen66/rate-availability-calendar.git
+cd rate-availability-calendar
+
+2️⃣ Install Dependencies
+sh
+```
+npm install
+# or
+yarn install
+```
+
+
+3️⃣ Configure Environment Variables
+Create a .env.local file in the root directory and add the following:
+
+```
+NEXT_PUBLIC_BACKEND_URL=https://beta.api.bytebeds.com
+```
+4️⃣ Run the Development Server
+```
+npm run dev
+```
+
+
