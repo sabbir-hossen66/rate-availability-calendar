@@ -1,5 +1,5 @@
-import { enqueueSnackbar } from "notistack";
-import { IFetchError } from "@/types";
+// import { enqueueSnackbar } from "notistack";
+// import { IFetchError } from "@/types";
 
 
 interface Props {
@@ -14,69 +14,111 @@ export interface IResult<T> {
   status: string;
 }
 
+// const Fetch = async <TResponseData>({
+//   method,
+//   url,
+//   body,
+// }: Props): Promise<IResult<TResponseData>> => {
+//   try {
+//     const options: RequestInit = {
+//       method,
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(body),
+//     };
+//     const response = await fetch(url, options);
+//     if (!response.ok) {
+//       const errorData = await response.json().catch(() => ({})); // Gracefully handle non-JSON errors
+
+//       if (process.env.NODE_ENV === "development") {
+//         console.error("Fetch Error Response:", errorData);
+//       }
+
+//       throw { ...errorData, statusCode: response.status };
+//     }
+
+//     const data = await response.json();
+//     console.log('bai bai',data)
+
+//     if (process.env.NODE_ENV === "development") {
+//       console.log("Response Data Only Dev:", data);
+//     }
+
+//     return data as IResult<TResponseData>;
+//   } catch (error) {
+//     if (process.env.NODE_ENV === "development") {
+//       console.error("Fetch Error Only Dev", error);
+//     }
+
+//     if (!window.navigator.onLine) {
+//       enqueueSnackbar("You're currently offline.", { variant: "error" });
+//     } else {
+//       switch ((error as IFetchError).statusCode) {
+//         case 400:
+//           throw error;
+//         case 404:
+//           enqueueSnackbar((error as IFetchError).reason, {
+//             variant: "error",
+//           });
+//           break;
+//         case 500:
+//           enqueueSnackbar((error as IFetchError).message, {
+//             variant: "error",
+//           });
+//           throw error;
+//         default:
+//           enqueueSnackbar((error as IFetchError).message, {
+//             variant: "error",
+//           });
+//           throw error;
+//       }
+//     }
+
+//     throw error; // Always throw the error for consistent behavior
+//   }
+// };
+
+// export default Fetch;
+
+
+
 const Fetch = async <TResponseData>({
   method,
   url,
   body,
 }: Props): Promise<IResult<TResponseData>> => {
+  const controller = new AbortController(); // AbortController instance
+  const signal = controller.signal; // Signal to abort request
+
   try {
     const options: RequestInit = {
       method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : undefined,
+      signal, // Add signal to fetch
     };
+
     const response = await fetch(url, options);
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({})); // Gracefully handle non-JSON errors
-
-      if (process.env.NODE_ENV === "development") {
-        console.error("Fetch Error Response:", errorData);
-      }
-
+      const errorData = await response.json().catch(() => ({}));
       throw { ...errorData, statusCode: response.status };
     }
 
     const data = await response.json();
-    console.log('bai bai',data)
-
-    if (process.env.NODE_ENV === "development") {
-      console.log("Response Data Only Dev:", data);
-    }
-
     return data as IResult<TResponseData>;
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Fetch Error Only Dev", error);
+     const err = error as Error;
+    if (err.name === "AbortError") {
+      console.log("Fetch request aborted!");
+      return Promise.reject("Request Aborted");
     }
-
-    if (!window.navigator.onLine) {
-      enqueueSnackbar("You're currently offline.", { variant: "error" });
-    } else {
-      switch ((error as IFetchError).statusCode) {
-        case 400:
-          throw error;
-        case 404:
-          enqueueSnackbar((error as IFetchError).reason, {
-            variant: "error",
-          });
-          break;
-        case 500:
-          enqueueSnackbar((error as IFetchError).message, {
-            variant: "error",
-          });
-          throw error;
-        default:
-          enqueueSnackbar((error as IFetchError).message, {
-            variant: "error",
-          });
-          throw error;
-      }
-    }
-
-    throw error; // Always throw the error for consistent behavior
+    throw error;
+  } finally {
+    controller.abort(); // Always abort to clean up resources
   }
 };
-
-export default Fetch;
+export default Fetch

@@ -12,9 +12,9 @@ import {
 
 import { useTheme } from "@mui/material/styles";
 import { DateRange } from "@mui/x-date-pickers-pro";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
-import { Controller, useForm } from "react-hook-form";
+// import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+// import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
+import { useForm } from "react-hook-form";
 import {
   RefObject,
   memo,
@@ -147,7 +147,7 @@ export default function Page() {
   );
 
   // Form control for date range picker
-  const { control, watch } = useForm<CalendarForm>({
+  const {  watch } = useForm<CalendarForm>({
     defaultValues: {
       date_range: [dayjs(), dayjs().add(4, "month")],
     },
@@ -167,18 +167,19 @@ export default function Page() {
     setCalenderDates(dates);
   }, [watchedDateRange]);
 
-      const handleMonthScroll = (e) => {
+const handleMonthScroll = (e: React.UIEvent<HTMLDivElement>) => {
   // Get the horizontal scroll position of the months list
-  const scrollLeft = e.target.scrollLeft;
+  const scrollLeft = e.currentTarget.scrollLeft;
 
   // Now apply that scroll position to the dates grid
   if (calenderDatesRef.current) {
     calenderDatesRef.current.scrollTo({
-      left: scrollLeft, // Sync the horizontal scroll position
-      behavior: 'smooth', // Optional: add smooth scroll effect
+      scrollLeft, // Corrected property name
+      behavior: "smooth", // Optional: add smooth scroll effect
     });
   }
 };
+
 
 
   // Fetch room rate availability calendar data
@@ -301,7 +302,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 )}
               />
             </Grid>  */}
-           <FormWithDatePicker/>
+       <FormWithDatePicker/>
             
           </Grid>
         </Card>

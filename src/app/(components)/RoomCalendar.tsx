@@ -41,6 +41,13 @@ interface IGridData {
   };
 }
 
+interface CustomGridProps extends VariableSizeGrid {
+  isLastElement?: boolean;
+  
+}
+
+
+
 // Component to render the room rate availability calendar
 export default function RoomRateAvailabilityCalendar(props: IProps) {
   const theme = useTheme(); // Get the theme for styling
@@ -212,6 +219,7 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
   );
 
   // Style the VariableSizeGrid to hide the scrollbar if it's not the last element
+
   // const StyledVariableSizeGrid = styled(VariableSizeGrid)(
   //   props.isLastElement
   //     ? {}
@@ -224,22 +232,26 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
   //       }
   // );
   
-  const StyledVariableSizeGrid = styled(VariableSizeGrid)(props => ({
-  overflowX: 'auto',
-  scrollBehavior: 'smooth', // This enables smooth scrolling
-  scrollbarWidth: "none",
-  msOverflowStyle: "none",
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
-  ...(props.isLastElement ? {} : {
+const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
+  (props) => ({
+    overflowX: "auto",
+    scrollBehavior: "smooth", // Enables smooth scrolling
     scrollbarWidth: "none",
     msOverflowStyle: "none",
     "&::-webkit-scrollbar": {
       display: "none",
     },
-  }),
-}));
+    ...(props.isLastElement
+      ? {}
+      : {
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }),
+  })
+);
 
 
   return (
@@ -404,59 +416,59 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
         >
           <AutoSizer>
             {({ height, width }) => (
-              // <StyledVariableSizeGrid
-              //   height={height}
-              //   width={width}
-              //   columnCount={props.room_category.inventory_calendar.length}
-              //   columnWidth={() => 74}
-              //   rowCount={calendarGridData.length}
-              //   rowHeight={(index: number) => {
-              //     if (calendarGridData[index].type === "inventory") {
-              //       return 30;
-              //     } else {
-              //       if (calendarGridData[index].row === "rate") {
-              //         return 60;
-              //       } else {
-              //         return 30;
-              //       }
-              //     }
-              //   }}
-              //   onScroll={props.handleCalenderScroll}
-              //   ref={InventoryRef}
-              //   itemData={{
-              //     rowData: calendarGridData,
-              //     inventoryData: props.room_category.inventory_calendar,
-              //   }}
-              // >
-              //   {RateCalendarGrid}
-              // </StyledVariableSizeGrid>
-
               <StyledVariableSizeGrid
-  height={height}
-  width={width}
-  columnCount={props.room_category.inventory_calendar.length}
-  columnWidth={() => 74} // You can make this dynamic based on the screen size or content
-  rowCount={calendarGridData.length}
-  rowHeight={(index: number) => {
-    if (calendarGridData[index].type === "inventory") {
-      return 30; // You can adjust this dynamically based on the content
-    } else {
-      if (calendarGridData[index].row === "rate") {
-        return 60;
-      } else {
-        return 30;
-      }
-    }
-  }}
-  onScroll={props.handleCalenderScroll}
-  ref={InventoryRef}
-  itemData={{
-    rowData: calendarGridData,
-    inventoryData: props.room_category.inventory_calendar,
-  }}
->
-  {RateCalendarGrid}
-</StyledVariableSizeGrid>
+                height={height}
+                width={width}
+                columnCount={props.room_category.inventory_calendar.length}
+                columnWidth={() => 74}
+                rowCount={calendarGridData.length}
+                rowHeight={(index: number) => {
+                  if (calendarGridData[index].type === "inventory") {
+                    return 30;
+                  } else {
+                    if (calendarGridData[index].row === "rate") {
+                      return 60;
+                    } else {
+                      return 30;
+                    }
+                  }
+                }}
+                onScroll={props.handleCalenderScroll}
+                ref={InventoryRef}
+                itemData={{
+                  rowData: calendarGridData,
+                  inventoryData: props.room_category.inventory_calendar,
+                }}
+              >
+                {RateCalendarGrid}
+              </StyledVariableSizeGrid>
+
+//               <StyledVariableSizeGrid
+//   height={height}
+//   width={width}
+//   columnCount={props.room_category.inventory_calendar.length}
+//   columnWidth={() => 74} // You can make this dynamic based on the screen size or content
+//   rowCount={calendarGridData.length}
+//   rowHeight={(index: number) => {
+//     if (calendarGridData[index].type === "inventory") {
+//       return 30; // You can adjust this dynamically based on the content
+//     } else {
+//       if (calendarGridData[index].row === "rate") {
+//         return 60;
+//       } else {
+//         return 30;
+//       }
+//     }
+//   }}
+//   onScroll={props.handleCalenderScroll}
+//   ref={InventoryRef}
+//   itemData={{
+//     rowData: calendarGridData,
+//     inventoryData: props.room_category.inventory_calendar,
+//   }}
+// >
+//   {RateCalendarGrid}
+// </StyledVariableSizeGrid>
 
             )}
           </AutoSizer>
