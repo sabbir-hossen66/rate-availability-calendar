@@ -413,7 +413,9 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
       <Box display="flex" justifyContent="center" alignItems="center" height="100px" sx={{ color: "green" }}>
         Loading More data... Please wait..
       </Box>
-    ) : null
+    ) :       <Box display="flex" justifyContent="center" alignItems="center" height="100px" sx={{ color: "red" }}>
+        No More data...
+      </Box>
   }       
 scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
 >
