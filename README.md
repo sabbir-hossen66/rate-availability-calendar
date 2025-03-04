@@ -94,7 +94,7 @@ In Page.tsx Inside Grid Added this for smooth behavior
 -**In this table, you can left-click and drag the mouse to the right to scroll horizontally.**
 
 ## Update DateChangePicker 
-![Rate Availability Calendar](https://i.ibb.co.com/s8x5h9H/jjj.png)
+![Rate Availability Calendar](https://i.ibb.co.com/20MvnB0M/custom.png)
 I have created a file named FormWithDatePicker for the date picker functionality. It is optimized for smooth performance & animated, and I have imported it into the page.tsx file.
 
 ### For OptimizedIntegrations and facing challenge : 
