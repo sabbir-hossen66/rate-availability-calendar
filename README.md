@@ -1,12 +1,15 @@
 # Rate Availability Calendar
 
-This project implements an infinite scroll feature vertically using TanStack Query (`@tanstack/react-query`) and the `react-infinite-scroll-component`. The infinite scroll allows users to seamlessly load more items (posts) as they scroll down the page.
+This project implements an infinite scroll feature vertically using TanStack Query (`@tanstack/react-query`) and the `react-infinite-scroll-component`. The infinite scroll allows users to seamlessly load more items as they scroll down the page. and Optimize the Horizontal scroll behavior to ensure it is smooth and responsive.
 
 ## Features
 
-- **Infinite Scroll:** Items (posts) are loaded dynamically as the user scrolls down, reducing page load times and improving the user experience.
+- **Infinite Scroll:** Items are loaded dynamically as the user scrolls down, reducing page load times and improving the user experience.
 - **TanStack Query:** A powerful data-fetching library used to manage the fetching and caching of data efficiently.
 - **React Infinite Scroll Component:** A simple and customizable component to implement the infinite scroll functionality.
+
+#### Additional Note
+ To implement infinite scroll in a React project using React Query, you don't need a separate installation for "infinite scroll" specifically. The infinite scroll functionality comes from the useInfiniteQuery hook in the React Query library. However, if you want to implement infinite scroll behavior by handling scroll events (like when the user reaches the bottom of the page), you might need an additional library like react-infinite-scroll-component.
 
 ## Installation
 
