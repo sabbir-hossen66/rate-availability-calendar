@@ -80,3 +80,6 @@ msOverflowStyle: "none", // Hides the scrollbar for IE/Edge
 ## Update DateChangePicker 
 I have created a file named FormWithDatePicker for the date picker functionality. It is optimized for smooth performance, and I have imported it into the page.tsx file.
 
+### For OptimizedIntegrations and facing challenge : 
+
+I tried to implement debounce,throttle from lodash. but it'd didn't work for horizontally At that time, I fixed it in a different way, as described above.
