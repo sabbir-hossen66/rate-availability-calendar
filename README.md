@@ -30,7 +30,11 @@ const {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery
+  } = useInfiniteQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    getNextPageParam: (lastPage) => lastPage.nextPage, // next page
+  });
 
   return (
       <InfiniteScroll
