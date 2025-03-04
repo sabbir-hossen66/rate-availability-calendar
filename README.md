@@ -61,3 +61,5 @@ retry: 1, // Retry the query once in case of failure
 
 ```
 
+## Update features for Horizontal scroll -
+In the page.tsx file, I set columnCount to 10 and columnWidth to 150 inside the AutoSizer. In the RoomCalendar.tsx file, I updated the -**StyledVariableSizeGrid** to allow smooth horizontal scrolling. Additionally, I enabled the scrollbar and when the mouse left button is triggered and moved left or right, the data will show smoothly without any lag.
