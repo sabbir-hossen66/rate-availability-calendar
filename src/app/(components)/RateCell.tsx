@@ -50,13 +50,13 @@ export default function RoomRateCell(props: IProps) {
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "end",
+          alignItems: "center",
           width: "100%",
           height: "100%",
-          fontSize: "12px",
+          fontSize: "16px",
           fontWeight: "bold",
-          borderLeft: "1px solid",
-          borderBottom: "1px solid",
+          borderLeft: "2px solid",
+          borderBottom: "2px solid",
           borderColor: props.inventory.status
             ? theme.palette.divider
             : theme.palette.error.dark,
@@ -95,9 +95,9 @@ export default function RoomRateCell(props: IProps) {
                 sx: {
                   paddingX: "4px",
                   paddingY: "4px",
-                  textAlign: "right",
-                  fontSize: "12px",
-                  fontWeight: "bold",
+                  textAlign: "center",
+                  fontSize: "18px",
+                  fontWeight: "semibold",
                 },
               }}
               error={invalid}

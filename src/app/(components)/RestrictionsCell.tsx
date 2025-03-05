@@ -54,7 +54,7 @@ export default function RoomRateRestrictionsCell(props: IProps) {
           alignItems: "center",
           width: "100%",
           height: "100%",
-          fontSize: "12px",
+          fontSize: "14px",
           fontWeight: "bold",
           borderLeft: "1px solid",
           borderBottom: "1px solid",
@@ -100,9 +100,9 @@ export default function RoomRateRestrictionsCell(props: IProps) {
                 sx: {
                   paddingX: "4px",
                   paddingY: "4px",
-                  textAlign: "right",
-                  fontSize: "12px",
-                  fontWeight: 600,
+                  textAlign: "center",
+                  fontSize: "18px",
+                  fontWeight: 400,
                 },
               }}
               error={invalid}

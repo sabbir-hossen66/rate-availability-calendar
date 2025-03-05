@@ -114,13 +114,13 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
                   width: "100%",
                   height: "100%",
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
                   alignItems: "center",
                   pr: 1,
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  borderLeft: "1px solid",
-                  borderBottom: "1px solid",
+                  fontSize: "18px",
+                  fontWeight: "semibold",
+                  borderLeft: "2px solid",
+                  borderBottom: "2px solid",
                   borderColor: inventory.status
                     ? theme.palette.divider
                     : theme.palette.error.dark,
@@ -142,15 +142,15 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
                   height: "100%",
                   pr: 1,
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  borderLeft: "1px solid",
-                  borderBottom: "1px solid",
+                  fontSize: "18px",
+                  fontWeight: 400,
+                  borderLeft: "2px solid",
+                  borderBottom: "2px solid",
                   borderColor: inventory.status
                     ? theme.palette.divider
                     : theme.palette.error.dark,
@@ -272,7 +272,7 @@ const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
         <Grid
           sx={{
             pl: 4,
-            fontSize: "12px",
+            fontSize: "14px",
             fontWeight: 500,
           }}
           container

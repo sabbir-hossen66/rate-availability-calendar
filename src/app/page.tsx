@@ -85,6 +85,8 @@ export default function Page() {
 
 
 
+
+
   // Handle horizontal scroll for the entire calendar
   const handleCalenderScroll = useCallback(
     ({ scrollLeft }: GridOnScrollProps) => {
@@ -309,12 +311,12 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
               <AutoSizer disableHeight>
                 {({ width }) => (
                   <StyledVariableSizeList
-                    height={19}
+                    height={30}
                     width={width}
                     itemCount={calenderMonths.length}
                     itemSize={(index: number) => {
                       const no_of_days = calenderMonths[index][1];
-                      return no_of_days * 74;
+                      return no_of_days * 150;
                     }}
                     layout="horizontal"
                     ref={calenderMonthsRef}
@@ -359,7 +361,8 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                   <FixedSizeGrid
                     height={height}
                     width={width}
-                    columnCount={Math.min(10, calenderDates.length)}
+                    //columnCount={Math.min(10, calenderDates.length)}
+                    columnCount={calenderDates.length}
                     columnWidth={150}
                     rowCount={1}
                     rowHeight={37}
