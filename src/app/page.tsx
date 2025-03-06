@@ -71,18 +71,31 @@ export default function Page() {
   const InventoryRefs = useRef<Array<RefObject<VariableSizeGrid>>>([]);
 
   // Handle horizontal scroll for dates
-  const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
+  // const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
+  //   InventoryRefs.current.forEach((ref) => {
+  //     if (ref.current) {
+  //       ref.current.scrollTo({ scrollLeft });
+  //     }
+  //   });
+  //   if (calenderMonthsRef.current) {
+  //     calenderMonthsRef.current.scrollTo(scrollLeft);
+  //   }
+  // }, []);
+
+  // new
+const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
+  requestAnimationFrame(() => {
     InventoryRefs.current.forEach((ref) => {
       if (ref.current) {
-        ref.current.scrollTo({ scrollLeft });
+        ref.current.scrollLeft = scrollLeft;
       }
     });
+
     if (calenderMonthsRef.current) {
-      calenderMonthsRef.current.scrollTo(scrollLeft);
+      calenderMonthsRef.current.scrollLeft = scrollLeft;
     }
-  }, []);
-
-
+  });
+}, []);
 
 
 
@@ -104,6 +117,7 @@ export default function Page() {
     },
     []
   );
+
 
 
 
@@ -139,6 +153,10 @@ export default function Page() {
       return () => rootContainer.removeEventListener("wheel", handler);
     }
   });
+
+
+
+
 
   // State for calendar dates and months
   const [calenderDates, setCalenderDates] = useState<Array<dayjs.Dayjs>>([]);
@@ -242,8 +260,8 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
         <Box
           sx={{
             pr: 1,
-            fontSize: "12px",
-            textAlign: "right",
+            fontSize: "14px",
+            textAlign: "center",
             fontWeight: "bold",
             borderLeft: "1px solid",
             borderBottom: "1px solid",
@@ -302,9 +320,9 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 xl: 10,
               }}
                 sx={{
-    overflowX: 'auto', // Enable horizontal scroll
+                  overflowX: 'auto', // Enable horizontal scroll
                   whiteSpace: 'nowrap', // Prevent wrapping of content inside  
-      scrollBehavior: 'smooth', 
+                  scrollBehavior: 'smooth', 
               }}
                 onScroll={handleMonthScroll}
             >
@@ -331,7 +349,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
           <Grid container sx={{ height: 48 }}>
             <Grid
               sx={{
-                borderBottom: "1px solid",
+                borderBottom: "2px solid",
                 borderColor: theme.palette.divider,
               }}
               size={{
@@ -353,7 +371,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 sx={{
     overflowX: 'auto', // Enable horizontal scroll
    whiteSpace: 'nowrap', // Prevent wrapping
-      scrollBehavior: 'smooth', 
+                  scrollBehavior: 'smooth', 
   }}
             >
               <AutoSizer>
@@ -375,6 +393,8 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                   </FixedSizeGrid>
                 )}
               </AutoSizer>
+
+
             </Grid>
           </Grid>
 

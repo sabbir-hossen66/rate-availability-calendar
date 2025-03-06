@@ -220,6 +220,8 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
     areEqual
   );
   
+
+  
 const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
   (props) => ({
     overflowX: "auto",

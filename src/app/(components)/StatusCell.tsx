@@ -23,7 +23,7 @@ export default function RoomInventoryStatusCell(props: IProps) {
           justifyContent: "center",
           alignItems: "center",
           pr: 1,
-          fontSize: "12px",
+          fontSize: "14px",
           textAlign: "right",
           fontWeight: "bold",
           borderLeft: "1px solid",
