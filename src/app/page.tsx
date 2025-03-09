@@ -15,7 +15,7 @@ import { DateRange } from "@mui/x-date-pickers-pro";
 // import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 // import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
 import { useForm } from "react-hook-form";
-import {
+import React, {
   RefObject,
   memo,
   useCallback,
@@ -40,6 +40,7 @@ import RoomRateAvailabilityCalendar from "./(components)/RoomCalendar";
 import Navbar from "@/components/Navbar";
 import useRoomRateAvailabilityCalendar from "./(hooks)/useRoomRateAvailabilityCalendar";
 import FormWithDatePicker from "./(components)/FormWithDatePicker";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 
 // Define the form type for the date range picker
@@ -70,32 +71,59 @@ export default function Page() {
   const mainGridContainerRef = useRef<HTMLDivElement | null>(null);
   const InventoryRefs = useRef<Array<RefObject<VariableSizeGrid>>>([]);
 
-  // Handle horizontal scroll for dates
-  // const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
+
+  // new virtualize
+//   const COLUMN_WIDTH = 74;
+// const ROW_HEIGHT = 37;
+
+
+
+
+  
+  // virtaul handleDate
+  // const handleDatesScroll = useCallback(() => {
+  //   const scrollLeft = parentRef.current?.scrollLeft ?? 0;
+
   //   InventoryRefs.current.forEach((ref) => {
   //     if (ref.current) {
-  //       ref.current.scrollTo({ scrollLeft });
+  //       ref.current.scrollLeft = scrollLeft;
   //     }
   //   });
+
   //   if (calenderMonthsRef.current) {
-  //     calenderMonthsRef.current.scrollTo(scrollLeft);
+  //     calenderMonthsRef.current.scrollLeft = scrollLeft;
   //   }
   // }, []);
 
-  // new
-const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
-  requestAnimationFrame(() => {
+
+
+  // Handle horizontal scroll for dates
+  const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     InventoryRefs.current.forEach((ref) => {
       if (ref.current) {
-        ref.current.scrollLeft = scrollLeft;
+        ref.current.scrollTo({ scrollLeft });
       }
     });
-
     if (calenderMonthsRef.current) {
-      calenderMonthsRef.current.scrollLeft = scrollLeft;
+      calenderMonthsRef.current.scrollTo(scrollLeft);
     }
-  });
-}, []);
+  }, []);
+
+
+  // new
+// const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
+//   requestAnimationFrame(() => {
+//     InventoryRefs.current.forEach((ref) => {
+//       if (ref.current) {
+//         ref.current.scrollLeft = scrollLeft;
+//       }
+//     });
+
+//     if (calenderMonthsRef.current) {
+//       calenderMonthsRef.current.scrollLeft = scrollLeft;
+//     }
+//   });
+// }, []);
 
 
 
@@ -164,6 +192,9 @@ const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     []
   );
 
+
+
+
   // Form control for date range picker
   const {  watch } = useForm<CalendarForm>({
     defaultValues: {
@@ -185,23 +216,23 @@ const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     setCalenderDates(dates);
   }, [watchedDateRange]);
 
-const handleMonthScroll = (e: React.UIEvent<HTMLDivElement>) => {
-  // Get the horizontal scroll position of the months list
-  const scrollLeft = e.currentTarget.scrollLeft;
+// const handleMonthScroll = (e: React.UIEvent<HTMLDivElement>) => {
+//   // Get the horizontal scroll position of the months list
+//   const scrollLeft = e.currentTarget.scrollLeft;
 
-  // Now apply that scroll position to the dates grid
-  if (calenderDatesRef.current) {
-    calenderDatesRef.current.scrollTo({
-      scrollLeft, // Corrected property name
-      //behavior: "smooth", // Optional: add smooth scroll effect
-    });
-  }
-};
+//   // Now apply that scroll position to the dates grid
+//   if (calenderDatesRef.current) {
+//     calenderDatesRef.current.scrollTo({
+//       scrollLeft, // Corrected property name
+//       //behavior: "smooth", // Optional: add smooth scroll effect
+//     });
+//   }
+// };
 
 
 
   // Fetch room rate availability calendar data
-const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
+const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvailabilityCalendar({
   property_id: propertyId,
   start_date: watchedDateRange[0]!.format("YYYY-MM-DD"),
   end_date: (watchedDateRange[1]
@@ -212,15 +243,49 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
   //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
 
 
+    const parentRef = useRef<HTMLDivElement | null>(null);
+//virtualize
+const monthVirtualizer = useVirtualizer({
+  count: calenderMonths.length,
+  getScrollElement: () => parentRef.current, // Scroll Parent set kora holo
+  estimateSize: (index) => {
+    const no_of_days = calenderMonths[index][1];
+    return no_of_days * 74; // Day width er basis e calculate hocche
+  },
+});
+
+const dateVirtualizer = useVirtualizer({
+  count: calenderDates.length,
+  getScrollElement: () => parentRef.current,
+  estimateSize: () => 74, // Fixed column width
+});
+  console.log('new virtualize', monthVirtualizer.getVirtualItems());
+  
+
+// // Scroll Sync Handle
+// useEffect(() => {
+//   const handleScroll = () => {
+//     if (parentRef.current) {
+//       const scrollLeft = parentRef.current.scrollLeft;
+//       monthVirtualizer.scrollToOffset(scrollLeft);
+//       dateVirtualizer.scrollToOffset(scrollLeft);
+//     }
+//   };
+
+//   const parent = parentRef.current;
+//   parent?.addEventListener("scroll", handleScroll);
+//   return () => parent?.removeEventListener("scroll", handleScroll);
+// }, [monthVirtualizer, dateVirtualizer]);
+
+
+
+
   // Component to render each month row in the calendar
   const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
     index,
     style,
   }) {
     const month = calenderMonths[index][0];
-
-
-
 
     return (
       <Box style={style}>
@@ -259,22 +324,25 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
       <Box style={style}>
         <Box
           sx={{
-            pr: 1,
+            //pr: 1,
             fontSize: "14px",
             textAlign: "center",
             fontWeight: "bold",
-            borderLeft: "1px solid",
+            borderLeft: "2px solid",
             borderBottom: "1px solid",
+            padding:'6px',
             borderColor: theme.palette.divider,
           }}
         >
-          <Box>{calenderDates[columnIndex]?.format("ddd")}</Box>
+          {/* <Box>{calenderDates[columnIndex]?.format("ddd")}</Box> */}
           <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
         </Box>
       </Box>
     );
   },
-  areEqual);
+    areEqual);
+  //const MemoizedDateRow = React.memo(DateRow);
+
 
   return (
     <Container sx={{ backgroundColor: "#EEF2F6" }}>
@@ -300,7 +368,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
           </Grid>
         </Card>
         <Card elevation={1} sx={{ my: 6, padding: 3 }} ref={rootContainerRef}>
-          <Grid container columnSpacing={2}>
+          {/* <Grid container columnSpacing={2}>
             <Grid
               size={{
                 xs: 4,
@@ -319,12 +387,12 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 lg: 10,
                 xl: 10,
               }}
-                sx={{
-                  overflowX: 'auto', // Enable horizontal scroll
-                  whiteSpace: 'nowrap', // Prevent wrapping of content inside  
-                  scrollBehavior: 'smooth', 
+                 sx={{
+                   overflowX: 'auto', // Enable horizontal scroll
+                   whiteSpace: 'nowrap', // Prevent wrapping of content inside  
+                   scrollBehavior: 'smooth', 
               }}
-                onScroll={handleMonthScroll}
+              //   onScroll={handleMonthScroll}
             >
               <AutoSizer disableHeight>
                 {({ width }) => (
@@ -334,7 +402,7 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                     itemCount={calenderMonths.length}
                     itemSize={(index: number) => {
                       const no_of_days = calenderMonths[index][1];
-                      return no_of_days * 150;
+                      return no_of_days * 74;
                     }}
                     layout="horizontal"
                     ref={calenderMonthsRef}
@@ -344,9 +412,9 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 )}
               </AutoSizer>
             </Grid>
-          </Grid>
+          </Grid> */}
 
-          <Grid container sx={{ height: 48 }}>
+           <Grid container sx={{ height: 48 }}>
             <Grid
               sx={{
                 borderBottom: "2px solid",
@@ -368,35 +436,53 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
                 lg: 10,
                 xl: 10,
               }}
-                sx={{
-    overflowX: 'auto', // Enable horizontal scroll
-   whiteSpace: 'nowrap', // Prevent wrapping
-                  scrollBehavior: 'smooth', 
-  }}
             >
-              <AutoSizer>
-                {({ height, width }) => (
-                  <FixedSizeGrid
-                    height={height}
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <StyledVariableSizeList
+                    height={30}
                     width={width}
-                    //columnCount={Math.min(10, calenderDates.length)}
-                    columnCount={calenderDates.length}
-                    columnWidth={150}
-                    rowCount={1}
-                    rowHeight={37}
-                    ref={calenderDatesRef}
-                    outerRef={mainGridContainerRef}
-                    onScroll={handleDatesScroll}
-
+                    itemCount={calenderMonths.length}
+                    itemSize={(index: number) => {
+                      const no_of_days = calenderMonths[index][1];
+                      return no_of_days * 74;
+                    }}
+                    layout="horizontal"
+                    ref={calenderMonthsRef}
                   >
-                    {DateRow}
-                  </FixedSizeGrid>
+                    {MonthRow}
+                  </StyledVariableSizeList>
                 )}
               </AutoSizer>
 
+                <AutoSizer>
+                  {({ height, width }) => (
+                    
+                    <FixedSizeGrid
+                      height={height}
+                      width={width}
+                      //columnCount={Math.min(10, calenderDates.length)}
+                      columnCount={calenderDates.length}
+                      columnWidth={74}
+                      rowCount={1}
+                      rowHeight={37}
+                      ref={calenderDatesRef}
+                      outerRef={mainGridContainerRef}
+                      onScroll={handleDatesScroll}
 
+                    >
+                      {DateRow}
+                    </FixedSizeGrid>
+
+                  )}
+                </AutoSizer> 
+              
+
+              
             </Grid>
-          </Grid>
+          </Grid> 
+
+
 
   {
             
@@ -405,13 +491,15 @@ const { data, fetchNextPage, hasNextPage } = useRoomRateAvailabilityCalendar({
   next={() => fetchNextPage()}
   hasMore={hasNextPage}
   loader={
-    hasNextPage ? (
+     isFetchingNextPage  ? (
       <Box display="flex" justifyContent="center" alignItems="center" height="100px" sx={{ color: "green" }}>
         Loading More data... Please wait..
       </Box>
-    ) :       <Box display="flex" justifyContent="center" alignItems="center" height="100px" sx={{ color: "red" }}>
+    ) : !hasNextPage ? (
+             <Box display="flex" justifyContent="center" alignItems="center" height="100px" sx={{ color: "red" }}>
         No More data...
       </Box>
+    ):null
   }       
 scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
 >
@@ -432,6 +520,7 @@ scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
 
    }
         </Card>
+        
       </Box>
       <Box
         component="footer"

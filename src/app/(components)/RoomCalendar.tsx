@@ -5,7 +5,7 @@ import RoomInventoryStatusCell from "./StatusCell";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {
   VariableSizeGrid,
-  VariableSizeGridProps,
+  //VariableSizeGridProps,
   areEqual,
   GridChildComponentProps,
   GridOnScrollProps,
@@ -42,10 +42,10 @@ interface IGridData {
   };
 }
 
-interface CustomGridProps extends VariableSizeGridProps  {
-  isLastElement?: boolean;
+// interface CustomGridProps extends VariableSizeGridProps  {
+//   isLastElement?: boolean;
   
-}
+// }
 
 
 
@@ -222,29 +222,41 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
   
 
   
-const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
-  (props) => ({
-    overflowX: "auto",
-    scrollBehavior: "smooth", // Enables smooth scrolling
-    scrollbarWidth: "none",
-   msOverflowStyle: "none",
-    "&::-webkit-scrollbar": {
-      display: "none",
-    },
-    ...(props.isLastElement
+// const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
+//   (props) => ({
+//     overflowX: "auto",
+//     scrollBehavior: "smooth", // Enables smooth scrolling
+//     scrollbarWidth: "none",
+//    msOverflowStyle: "none",
+//     "&::-webkit-scrollbar": {
+//       display: "none",
+//     },
+//     ...(props.isLastElement
+//       ? {}
+//       :
+//       {
+//           scrollbarWidth: "none",
+//           msOverflowStyle: "none",
+//           "&::-webkit-scrollbar": {
+//             display: "none",
+//           },
+//       }
+//     ),
+//   })
+// );
+
+    const StyledVariableSizeGrid = styled(VariableSizeGrid)(
+    props.isLastElement
       ? {}
-      :
-      {
+      : {
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           "&::-webkit-scrollbar": {
             display: "none",
           },
-      }
-    ),
-  })
-);
-
+        }
+  );
+  
 
   return (
     <>
