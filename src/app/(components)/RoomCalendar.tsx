@@ -42,11 +42,6 @@ interface IGridData {
   };
 }
 
-// interface CustomGridProps extends VariableSizeGridProps  {
-//   isLastElement?: boolean;
-  
-// }
-
 
 
 
@@ -220,30 +215,6 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
     areEqual
   );
   
-
-  
-// const StyledVariableSizeGrid = styled(VariableSizeGrid)<CustomGridProps>(
-//   (props) => ({
-//     overflowX: "auto",
-//     scrollBehavior: "smooth", // Enables smooth scrolling
-//     scrollbarWidth: "none",
-//    msOverflowStyle: "none",
-//     "&::-webkit-scrollbar": {
-//       display: "none",
-//     },
-//     ...(props.isLastElement
-//       ? {}
-//       :
-//       {
-//           scrollbarWidth: "none",
-//           msOverflowStyle: "none",
-//           "&::-webkit-scrollbar": {
-//             display: "none",
-//           },
-//       }
-//     ),
-//   })
-// );
 
     const StyledVariableSizeGrid = styled(VariableSizeGrid)(
     props.isLastElement

@@ -78,25 +78,6 @@ export default function Page() {
 
 
 
-
-  
-  // virtaul handleDate
-  // const handleDatesScroll = useCallback(() => {
-  //   const scrollLeft = parentRef.current?.scrollLeft ?? 0;
-
-  //   InventoryRefs.current.forEach((ref) => {
-  //     if (ref.current) {
-  //       ref.current.scrollLeft = scrollLeft;
-  //     }
-  //   });
-
-  //   if (calenderMonthsRef.current) {
-  //     calenderMonthsRef.current.scrollLeft = scrollLeft;
-  //   }
-  // }, []);
-
-
-
   // Handle horizontal scroll for dates
   const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     InventoryRefs.current.forEach((ref) => {
@@ -145,7 +126,6 @@ export default function Page() {
     },
     []
   );
-
 
 
 
@@ -216,21 +196,6 @@ export default function Page() {
     setCalenderDates(dates);
   }, [watchedDateRange]);
 
-// const handleMonthScroll = (e: React.UIEvent<HTMLDivElement>) => {
-//   // Get the horizontal scroll position of the months list
-//   const scrollLeft = e.currentTarget.scrollLeft;
-
-//   // Now apply that scroll position to the dates grid
-//   if (calenderDatesRef.current) {
-//     calenderDatesRef.current.scrollTo({
-//       scrollLeft, // Corrected property name
-//       //behavior: "smooth", // Optional: add smooth scroll effect
-//     });
-//   }
-// };
-
-
-
   // Fetch room rate availability calendar data
 const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvailabilityCalendar({
   property_id: propertyId,
@@ -242,6 +207,8 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
 });
   //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
 
+// const rowHeight = 37; // Adjust as per your design
+// const columnWidth = 74; // Adjust based on your item width
 
     const parentRef = useRef<HTMLDivElement | null>(null);
 //virtualize
@@ -253,30 +220,14 @@ const monthVirtualizer = useVirtualizer({
     return no_of_days * 74; // Day width er basis e calculate hocche
   },
 });
+   console.log('new virtualize', monthVirtualizer.getVirtualItems());
 
 const dateVirtualizer = useVirtualizer({
   count: calenderDates.length,
   getScrollElement: () => parentRef.current,
   estimateSize: () => 74, // Fixed column width
 });
-  console.log('new virtualize', monthVirtualizer.getVirtualItems());
-  
-
-// // Scroll Sync Handle
-// useEffect(() => {
-//   const handleScroll = () => {
-//     if (parentRef.current) {
-//       const scrollLeft = parentRef.current.scrollLeft;
-//       monthVirtualizer.scrollToOffset(scrollLeft);
-//       dateVirtualizer.scrollToOffset(scrollLeft);
-//     }
-//   };
-
-//   const parent = parentRef.current;
-//   parent?.addEventListener("scroll", handleScroll);
-//   return () => parent?.removeEventListener("scroll", handleScroll);
-// }, [monthVirtualizer, dateVirtualizer]);
-
+  console.log('new virtualize', dateVirtualizer.getVirtualItems());
 
 
 
@@ -476,9 +427,6 @@ const dateVirtualizer = useVirtualizer({
 
                   )}
                 </AutoSizer> 
-              
-
-              
             </Grid>
           </Grid> 
 
