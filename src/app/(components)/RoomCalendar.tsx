@@ -222,9 +222,9 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
       : {
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
+          // "&::-webkit-scrollbar": {
+          //   display: "none",
+          // },
         }
   );
   
@@ -394,9 +394,11 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
               <StyledVariableSizeGrid
                 height={height}
                 width={width}
-                columnCount={props.room_category.inventory_calendar.length}
+                //columnCount={props.room_category.inventory_calendar.length}
+                columnCount={Math.ceil(props.room_category.inventory_calendar.length / 2)}
                 columnWidth={() => 150}
                 rowCount={calendarGridData.length}
+                 //rowCount={Math.ceil(calendarGridData.length / 2)}
                 rowHeight={(index: number) => {
                   if (calendarGridData[index].type === "inventory") {
                     return 30;
@@ -417,8 +419,6 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
               >
                 {RateCalendarGrid}
               </StyledVariableSizeGrid>
-
-
 
             )}
           </AutoSizer>

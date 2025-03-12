@@ -54,9 +54,9 @@ const StyledVariableSizeList = styled(VariableSizeList)({
   msOverflowStyle: "none",
   scrollBehavior: "smooth", // Smooth scrolling
   overflowX: "auto", // Ensure horizontal scroll
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
+  // "&::-webkit-scrollbar": {
+  //   display: "none",
+  // },
 });
 
 
@@ -207,6 +207,7 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
 });
   //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
 
+
 // const rowHeight = 37; // Adjust as per your design
 // const columnWidth = 74; // Adjust based on your item width
 
@@ -226,8 +227,9 @@ const dateVirtualizer = useVirtualizer({
   count: calenderDates.length,
   getScrollElement: () => parentRef.current,
   estimateSize: () => 74, // Fixed column width
+  overscan:calenderDates.length
 });
-  console.log('new virtualize', dateVirtualizer.getVirtualItems());
+  // console.log('new virtualize', dateVirtualizer.getVirtualItems());
 
 
 
@@ -296,8 +298,9 @@ const dateVirtualizer = useVirtualizer({
 
 
   return (
-    <Container sx={{ backgroundColor: "#EEF2F6" }}>
-      <Navbar />
+    <Container sx={{ backgroundColor: "#EEF2F6"  }}>
+
+    <Navbar />
       <Box>
         <Card elevation={1} sx={{ padding: 4, mt: 4 }}>
           <Grid container columnSpacing={2}>
@@ -318,7 +321,8 @@ const dateVirtualizer = useVirtualizer({
             
           </Grid>
         </Card>
-        <Card elevation={1} sx={{ my: 6, padding: 3 }} ref={rootContainerRef}>
+        
+        <Card elevation={1} sx={{ my: 6, padding: 3}} ref={rootContainerRef}>
           {/* <Grid container columnSpacing={2}>
             <Grid
               size={{
@@ -365,11 +369,16 @@ const dateVirtualizer = useVirtualizer({
             </Grid>
           </Grid> */}
 
-           <Grid container sx={{ height: 48 }}>
+          <Grid container sx={{ height: 48, mb: 4}}>  
             <Grid
               sx={{
-                borderBottom: "2px solid",
-                borderColor: theme.palette.divider,
+                //borderBottom: "2px solid",
+                border:"2px solid",
+                //borderColor: theme.palette.divider,
+                borderColor: "green",
+                mt: 2,
+                padding:3
+         
               }}
               size={{
                 xs: 4,
@@ -379,6 +388,7 @@ const dateVirtualizer = useVirtualizer({
                 xl: 2,
               }}
             ></Grid>
+
             <Grid
               size={{
                 xs: 8,
@@ -393,7 +403,8 @@ const dateVirtualizer = useVirtualizer({
                   <StyledVariableSizeList
                     height={30}
                     width={width}
-                    itemCount={calenderMonths.length}
+                     itemCount={calenderMonths.length}
+                    //itemCount={Math.ceil(calenderMonths.length / 2)}
                     itemSize={(index: number) => {
                       const no_of_days = calenderMonths[index][1];
                       return no_of_days * 74;
@@ -409,11 +420,11 @@ const dateVirtualizer = useVirtualizer({
                 <AutoSizer>
                   {({ height, width }) => (
                     
-                    <FixedSizeGrid
+                  <FixedSizeGrid
                       height={height}
                       width={width}
-                      //columnCount={Math.min(10, calenderDates.length)}
                       columnCount={calenderDates.length}
+                      //columnCount={Math.ceil(calenderDates.length / 2)}
                       columnWidth={74}
                       rowCount={1}
                       rowHeight={37}
@@ -451,7 +462,8 @@ const dateVirtualizer = useVirtualizer({
   }       
 scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
 >
- {data?.pages?.flatMap((page) =>
+              <div>
+                 {data?.pages?.flatMap((page) =>
   page?.assessment?.map((room_category, index, array) => (
     <RoomRateAvailabilityCalendar
       key={room_category.id}
@@ -464,12 +476,14 @@ scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
   ))
    
 )}
+</div>
  </InfiniteScroll>
 
    }
         </Card>
         
       </Box>
+
       <Box
         component="footer"
         sx={{
