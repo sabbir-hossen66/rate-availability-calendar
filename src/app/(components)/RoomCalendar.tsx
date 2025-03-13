@@ -422,6 +422,7 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
 
             )}
           </AutoSizer>
+          
         </Grid>
       </Grid>
     </>

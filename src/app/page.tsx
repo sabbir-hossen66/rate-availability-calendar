@@ -72,12 +72,6 @@ export default function Page() {
   const InventoryRefs = useRef<Array<RefObject<VariableSizeGrid>>>([]);
 
 
-  // new virtualize
-//   const COLUMN_WIDTH = 74;
-// const ROW_HEIGHT = 37;
-
-
-
   // Handle horizontal scroll for dates
   const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
     InventoryRefs.current.forEach((ref) => {
@@ -89,24 +83,6 @@ export default function Page() {
       calenderMonthsRef.current.scrollTo(scrollLeft);
     }
   }, []);
-
-
-  // new
-// const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
-//   requestAnimationFrame(() => {
-//     InventoryRefs.current.forEach((ref) => {
-//       if (ref.current) {
-//         ref.current.scrollLeft = scrollLeft;
-//       }
-//     });
-
-//     if (calenderMonthsRef.current) {
-//       calenderMonthsRef.current.scrollLeft = scrollLeft;
-//     }
-//   });
-// }, []);
-
-
 
 
   // Handle horizontal scroll for the entire calendar
@@ -208,37 +184,81 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
   //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
 
 
-// const rowHeight = 37; // Adjust as per your design
-// const columnWidth = 74; // Adjust based on your item width
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  //const parentMonthRef = useRef<HTMLDivElement>(null);
 
-    const parentRef = useRef<HTMLDivElement | null>(null);
+
 //virtualize
-const monthVirtualizer = useVirtualizer({
-  count: calenderMonths.length,
-  getScrollElement: () => parentRef.current, // Scroll Parent set kora holo
-  estimateSize: (index) => {
-    const no_of_days = calenderMonths[index][1];
-    return no_of_days * 74; // Day width er basis e calculate hocche
-  },
-});
-   console.log('new virtualize', monthVirtualizer.getVirtualItems());
+// const monthVirtualizer = useVirtualizer({
+//   horizontal: true,
+//   count: calenderMonths.length,
+//   getScrollElement: () => parentRef.current,
+//   estimateSize: (index) => calenderMonths[index][1] * 74, // Adjusting size dynamically
+//   overscan: calenderMonths.length, // To smooth out rendering
+// });
+//    console.log('new virtualize', monthVirtualizer.getVirtualItems());
 
-const dateVirtualizer = useVirtualizer({
-  count: calenderDates.length,
-  getScrollElement: () => parentRef.current,
+const rowVirtualizer = useVirtualizer({
+  count: calenderDates.length||0,
+ getScrollElement: () => parentRef.current || document.body,
   estimateSize: () => 74, // Fixed column width
   overscan:calenderDates.length
 });
+  //console.log('new virtualize', rowVirtualizer.getVirtualItems());
+   console.log('parentref',parentRef.current);
+  // console.log('calender', calenderDates);
+  
+  
+  useEffect(() => {
+  setTimeout(() => {
+    parentRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+  }, 50);
+}, []);
+
   // console.log('new virtualize', dateVirtualizer.getVirtualItems());
 
 
 
   // Component to render each month row in the calendar
-  const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
-    index,
-    style,
-  }) {
-    const month = calenderMonths[index][0];
+  // const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
+  //   index,
+  //   style,
+  // }) {
+  //   const month = calenderMonths[index][0];
+
+  //   return (
+  //     <Box style={style}>
+  //       <Box
+  //         sx={{
+  //           px: 1,
+  //           fontSize: "12px",
+  //           fontWeight: "bold",
+  //           borderLeft: "1px solid",
+  //           borderBottom: "1px solid",
+  //           borderColor: theme.palette.divider,
+  //         }}
+  //       >
+  //         <Box
+  //           component="span"
+  //           sx={{
+  //             position: "sticky",
+  //             left: 2,
+  //             zIndex: 1,
+  //           }}
+  //         >
+  //           {month}
+  //         </Box>
+  //       </Box>
+  //     </Box>
+  //   );
+  // },
+  // areEqual);
+
+  // add new
+  const MonthRow: React.FC<{ index: number; style: React.CSSProperties }> = memo(
+  function MonthRowFC({ index, style, }) {
+   // const month = calenderMonths[index][0];
+    const month =calenderMonths[index]?.[0] ;
 
     return (
       <Box style={style}>
@@ -249,7 +269,7 @@ const dateVirtualizer = useVirtualizer({
             fontWeight: "bold",
             borderLeft: "1px solid",
             borderBottom: "1px solid",
-            borderColor: theme.palette.divider,
+            borderColor: "#ddd",
           }}
         >
           <Box
@@ -265,37 +285,63 @@ const dateVirtualizer = useVirtualizer({
         </Box>
       </Box>
     );
-  },
-  areEqual);
+  }
+);
+
 
   // Component to render each date row in the calendar
-  const DateRow: React.FC<GridChildComponentProps> = memo(function DateRowFC({
-    columnIndex,
-    style,
-  }) {
+  // const DateRow: React.FC<GridChildComponentProps> = memo(function DateRowFC({
+  //   columnIndex,
+  //   style,
+  // }) {
+  //   return (
+  //     <Box style={style}>
+  //       <Box
+  //         sx={{
+  //           //pr: 1,
+  //           fontSize: "14px",
+  //           textAlign: "center",
+  //           fontWeight: "bold",
+  //           borderLeft: "2px solid",
+  //           borderBottom: "1px solid",
+  //           padding:'6px',
+  //           borderColor: theme.palette.divider,
+  //         }}
+  //       >
+  //         {/* <Box>{calenderDates[columnIndex]?.format("ddd")}</Box> */}
+  //         <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
+  //       </Box>
+  //     </Box>
+  //   );
+  // },
+  //   areEqual);
+  
+  // new add
+  const DateRow: React.FC<{ columnIndex: number; style: React.CSSProperties }> = memo(
+  function DateRowFC({ columnIndex, style }) {
     return (
       <Box style={style}>
         <Box
           sx={{
-            //pr: 1,
             fontSize: "14px",
             textAlign: "center",
             fontWeight: "bold",
             borderLeft: "2px solid",
             borderBottom: "1px solid",
-            padding:'6px',
-            borderColor: theme.palette.divider,
+            padding: "6px",
+            borderColor: "#ddd",
           }}
         >
-          {/* <Box>{calenderDates[columnIndex]?.format("ddd")}</Box> */}
-          <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
+          {/* তারিখ ফরম্যাটিং */}
+          {/* {calenderDates[columnIndex] ? calenderDates[columnIndex].format("DD") : "--"} */}
+           <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
         </Box>
       </Box>
     );
-  },
-    areEqual);
-  //const MemoizedDateRow = React.memo(DateRow);
+  }
+);
 
+  
 
   return (
     <Container sx={{ backgroundColor: "#EEF2F6"  }}>
@@ -323,51 +369,7 @@ const dateVirtualizer = useVirtualizer({
         </Card>
         
         <Card elevation={1} sx={{ my: 6, padding: 3}} ref={rootContainerRef}>
-          {/* <Grid container columnSpacing={2}>
-            <Grid
-              size={{
-                xs: 4,
-                sm: 4,
-                md: 3,
-                lg: 2,
-                xl: 2,
-              }}
-            ></Grid>
-
-            <Grid
-              size={{
-                xs: 8,
-                sm: 8,
-                md: 9,
-                lg: 10,
-                xl: 10,
-              }}
-                 sx={{
-                   overflowX: 'auto', // Enable horizontal scroll
-                   whiteSpace: 'nowrap', // Prevent wrapping of content inside  
-                   scrollBehavior: 'smooth', 
-              }}
-              //   onScroll={handleMonthScroll}
-            >
-              <AutoSizer disableHeight>
-                {({ width }) => (
-                  <StyledVariableSizeList
-                    height={30}
-                    width={width}
-                    itemCount={calenderMonths.length}
-                    itemSize={(index: number) => {
-                      const no_of_days = calenderMonths[index][1];
-                      return no_of_days * 74;
-                    }}
-                    layout="horizontal"
-                    ref={calenderMonthsRef}
-                  >
-                    {MonthRow}
-                  </StyledVariableSizeList>
-                )}
-              </AutoSizer>
-            </Grid>
-          </Grid> */}
+        
 
           <Grid container sx={{ height: 48, mb: 4}}>  
             <Grid
@@ -398,7 +400,7 @@ const dateVirtualizer = useVirtualizer({
                 xl: 10,
               }}
             >
-              <AutoSizer disableHeight>
+               <AutoSizer disableHeight>
                 {({ width }) => (
                   <StyledVariableSizeList
                     height={30}
@@ -415,9 +417,11 @@ const dateVirtualizer = useVirtualizer({
                     {MonthRow}
                   </StyledVariableSizeList>
                 )}
-              </AutoSizer>
+              </AutoSizer> 
 
-                <AutoSizer>
+
+
+                {/* <AutoSizer>
                   {({ height, width }) => (
                     
                   <FixedSizeGrid
@@ -437,7 +441,45 @@ const dateVirtualizer = useVirtualizer({
                     </FixedSizeGrid>
 
                   )}
-                </AutoSizer> 
+                </AutoSizer>  */}
+   <div
+    ref={parentRef}
+    style={{
+      width: "100%",
+      overflowX: "auto",
+      whiteSpace: "nowrap",
+      position: "relative",
+      height: "40px", 
+        scrollBehavior: "smooth",
+    }}
+  >
+    <div
+      style={{
+        width: `${rowVirtualizer.getTotalSize()}px`,
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      {rowVirtualizer.getVirtualItems().map((virtualItem) => (
+        <DateRow
+          key={virtualItem.index}
+          columnIndex={virtualItem.index}
+          style={{
+            position: "absolute",
+            left: `${virtualItem.start}px`,
+            width: "74px",
+            height: "37px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1px solid #ddd",
+          }}
+        />
+      ))}
+    </div>
+  </div> 
+
+
             </Grid>
           </Grid> 
 
