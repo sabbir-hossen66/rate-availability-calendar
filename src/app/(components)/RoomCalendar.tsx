@@ -20,6 +20,8 @@ import  {
   IRoomInventory,
 } from "../(hooks)/useRoomRateAvailabilityCalendar";
 import { Person } from "@mui/icons-material";
+import { useVirtualizer } from "@tanstack/react-virtual";
+
 
 
 // Define the props for the RoomRateAvailabilityCalendar component
@@ -42,9 +44,10 @@ interface IGridData {
   };
 }
 
-
-
-
+interface RateCalendarGridData {
+  rowData: IGridData[];
+  inventoryData: IRoomInventory;
+}
 // Component to render the room rate availability calendar
 export default function RoomRateAvailabilityCalendar(props: IProps) {
   const theme = useTheme(); // Get the theme for styling
@@ -216,19 +219,60 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
   );
   
 
-    const StyledVariableSizeGrid = styled(VariableSizeGrid)(
-    props.isLastElement
-      ? {}
-      : {
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          // "&::-webkit-scrollbar": {
-          //   display: "none",
-          // },
-        }
-  );
+
+   const parentRef = useRef<HTMLDivElement>(null);
+   //const columnCount = Math.ceil(props.room_category.inventory_calendar.length / 2);
+  // const columnWidth = 150;
+
+  const columnVirtualizer = useVirtualizer({
+   //count: props.room_category.inventory_calendar.length,
+   horizontal: true, 
+   count: props.room_category.inventory_calendar.length,
+    getScrollElement: () => parentRef.current, 
+    estimateSize: () => 150, 
+    overscan: 5, 
+  });
+
+   console.log('new virtualize', columnVirtualizer.getVirtualItems());
+    console.log('parentref',parentRef.current);
+
+  //   const StyledVariableSizeGrid = styled(VariableSizeGrid)(
+  //   props.isLastElement
+  //     ? {}
+  //     : {
+  //         scrollbarWidth: "none",
+  //         msOverflowStyle: "none",
+  //         "&::-webkit-scrollbar": {
+  //           display: "none",
+  //         },
+  //       }
+  // );
   
 
+  const StyledVariableSizeGrid = styled(VariableSizeGrid)(
+  props.isLastElement
+    ? {}
+    : {
+        overflowX: "auto", // Horizontal scroll enable
+        scrollbarWidth: "thin", // Firefox: Thin scrollbar
+        msOverflowStyle: "auto", // Edge: Show scrollbar
+        "&::-webkit-scrollbar": {
+          height: "8px", // WebKit Browsers: Set scrollbar height
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#888", // Scrollbar color
+          borderRadius: "4px",
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "#f1f1f1", // Track color
+        },
+        scrollBehavior: "smooth", // Enable smooth scrolling
+        
+      }
+);
+
+ 
+  
   return (
     <>
       
@@ -239,6 +283,7 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
             gutterBottom
             sx={{
               fontWeight: 700,
+              color:"green"
             }}
           >
             {props.room_category.name}
@@ -246,6 +291,7 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
         </Grid>
         <Grid size={2}></Grid>
       </Grid>
+      
       <Grid
         container
         sx={{
@@ -379,7 +425,7 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
           ))}
         </Grid>
 
-        <Grid
+         <Grid
           container
           size={{
             xs: 8,
@@ -389,13 +435,13 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
             xl: 10,
           }}
         >
-          <AutoSizer>
+          {/* <AutoSizer>
             {({ height, width }) => (
-              <StyledVariableSizeGrid
+              <StyledVariableSizeGrid 
                 height={height}
                 width={width}
-                //columnCount={props.room_category.inventory_calendar.length}
-                columnCount={Math.ceil(props.room_category.inventory_calendar.length / 2)}
+                columnCount={props.room_category.inventory_calendar.length}
+                //columnCount={Math.ceil(props.room_category.inventory_calendar.length / 2)}
                 columnWidth={() => 150}
                 rowCount={calendarGridData.length}
                  //rowCount={Math.ceil(calendarGridData.length / 2)}
@@ -421,9 +467,45 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
               </StyledVariableSizeGrid>
 
             )}
-          </AutoSizer>
+          </AutoSizer> */}
           
-        </Grid>
+              <AutoSizer>
+      {({ height, width }) => (
+        <div ref={parentRef} style={{ width, height, overflowX: "auto" }}>
+          <div
+            style={{
+              display: "flex",
+              width: `${columnVirtualizer.getTotalSize()}px`, // ✅ ডাইনামিক উইড্থ
+              position: "relative",
+            }}
+          >
+            {columnVirtualizer.getVirtualItems().map((virtualColumn) => (
+              <div
+                key={virtualColumn.index}
+                style={{
+                  position: "absolute",
+                  left: `${virtualColumn.start}px`,
+                  width: "150px",
+                  height: "100%",
+                }}
+              >
+      
+                <RateCalendarGrid
+                  rowData={calendarGridData}
+                  inventoryData={props.room_category.inventory_calendar[virtualColumn.index]}
+                />
+             
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </AutoSizer>
+          
+        </Grid> 
+        
+
+
       </Grid>
     </>
   );

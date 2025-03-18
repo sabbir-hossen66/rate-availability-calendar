@@ -25,10 +25,10 @@ import React, {
 } from "react";
 import {
   VariableSizeList,
-  ListChildComponentProps,
-  areEqual,
+  //ListChildComponentProps,
+ // areEqual,
   FixedSizeGrid,
-  GridChildComponentProps,
+  //GridChildComponentProps,
   VariableSizeGrid,
   GridOnScrollProps,
 } from "react-window";
@@ -70,19 +70,19 @@ export default function Page() {
   const calenderDatesRef = useRef<FixedSizeGrid | null>(null);
   const mainGridContainerRef = useRef<HTMLDivElement | null>(null);
   const InventoryRefs = useRef<Array<RefObject<VariableSizeGrid>>>([]);
-
+const parentRef = useRef<HTMLDivElement | null>(null);
 
   // Handle horizontal scroll for dates
-  const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
-    InventoryRefs.current.forEach((ref) => {
-      if (ref.current) {
-        ref.current.scrollTo({ scrollLeft });
-      }
-    });
-    if (calenderMonthsRef.current) {
-      calenderMonthsRef.current.scrollTo(scrollLeft);
-    }
-  }, []);
+  // const handleDatesScroll = useCallback(({ scrollLeft }: GridOnScrollProps) => {
+  //   InventoryRefs.current.forEach((ref) => {
+  //     if (ref.current) {
+  //       ref.current.scrollTo({ scrollLeft });
+  //     }
+  //   });
+  //   if (calenderMonthsRef.current) {
+  //     calenderMonthsRef.current.scrollTo(scrollLeft);
+  //   }
+  // }, []);
 
 
   // Handle horizontal scroll for the entire calendar
@@ -102,6 +102,11 @@ export default function Page() {
     },
     []
   );
+
+
+
+
+
 
 
 
@@ -181,10 +186,10 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
     : watchedDateRange[0]!.add(2, "month")
   ).format("YYYY-MM-DD"),
 });
-  //console.log("see the data", data?.pages[0]?.assessment?.room_categories);
+ 
 
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
+  //const parentRef = useRef<HTMLDivElement | null>(null);
   //const parentMonthRef = useRef<HTMLDivElement>(null);
 
 
@@ -196,16 +201,31 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
 //   estimateSize: (index) => calenderMonths[index][1] * 74, // Adjusting size dynamically
 //   overscan: calenderMonths.length, // To smooth out rendering
 // });
-//    console.log('new virtualize', monthVirtualizer.getVirtualItems());
+  //    console.log('new virtualize', monthVirtualizer.getVirtualItems());
 
-const rowVirtualizer = useVirtualizer({
-  count: calenderDates.length||0,
+  const flatData = data?.pages?.flatMap((page) => page?.assessment) || []; // ✅ Ensure data exists
+
+console.log("Flat Data: ", flatData); // ✅ Debugging: Checking Data
+  
+
+  // const rowVirtualizer1 = useVirtualizer({
+  // horizontal: true, // ✅ Ensure Horizontal Virtualization
+  // count: flatData.length,
+  // getScrollElement: () => parentRef.current,
+  // estimateSize: () => 400, // ✅ Item width estimate
+  // overscan: flatData.length, // ✅ Keep 2 extra items for smooth scrolling
+  // });
+  //console.log("new Item: ", rowVirtualizer1.getVirtualItems()); // ✅ Debugging: Checking Virtual Items
+
+  const rowVirtualizer = useVirtualizer({
+  //horizontal: true, 
+  count: calenderDates.length || 0,
  getScrollElement: () => parentRef.current || document.body,
   estimateSize: () => 74, // Fixed column width
-  overscan:calenderDates.length
+  overscan: calenderDates.length,
 });
-  //console.log('new virtualize', rowVirtualizer.getVirtualItems());
-   console.log('parentref',parentRef.current);
+  // console.log('new virtualize', rowVirtualizer.getVirtualItems());
+  //  console.log('parentref',parentRef.current);
   // console.log('calender', calenderDates);
   
   
@@ -213,7 +233,8 @@ const rowVirtualizer = useVirtualizer({
   setTimeout(() => {
     parentRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   }, 50);
-}, []);
+  }, []);
+  
 
   // console.log('new virtualize', dateVirtualizer.getVirtualItems());
 
@@ -332,7 +353,7 @@ const rowVirtualizer = useVirtualizer({
             borderColor: "#ddd",
           }}
         >
-          {/* তারিখ ফরম্যাটিং */}
+          
           {/* {calenderDates[columnIndex] ? calenderDates[columnIndex].format("DD") : "--"} */}
            <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
         </Box>
@@ -368,7 +389,7 @@ const rowVirtualizer = useVirtualizer({
           </Grid>
         </Card>
         
-        <Card elevation={1} sx={{ my: 6, padding: 3}} ref={rootContainerRef}>
+        <Card elevation={1} sx={{ my: 6, padding: 3, overflowX: "auto"}} ref={rootContainerRef}>
         
 
           <Grid container sx={{ height: 48, mb: 4}}>  
@@ -469,10 +490,10 @@ const rowVirtualizer = useVirtualizer({
             left: `${virtualItem.start}px`,
             width: "74px",
             height: "37px",
-            display: "flex",
+           // display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            border: "1px solid #ddd",
+            //border: "1px solid #ddd",
           }}
         />
       ))}
@@ -504,9 +525,10 @@ const rowVirtualizer = useVirtualizer({
   }       
 scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
 >
-              <div>
+
+               <div>
                  {data?.pages?.flatMap((page) =>
-  page?.assessment?.map((room_category, index, array) => (
+                   page?.assessment?.map((room_category, index, array) => (
     <RoomRateAvailabilityCalendar
       key={room_category.id}
       room_category={room_category}
@@ -518,7 +540,11 @@ scrollThreshold={0.6} // Trigger data load earlier (60% scroll)
   ))
    
 )}
-</div>
+              </div> 
+
+
+
+              
  </InfiniteScroll>
 
    }
