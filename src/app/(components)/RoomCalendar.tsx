@@ -11,7 +11,6 @@ import {
   GridOnScrollProps,
 } from "react-window";
 import { memo, RefObject, useMemo, useRef } from "react";
-import { styled } from "@mui/material/styles";
 import RoomRateCell from "./RateCell";
 import RoomRateRestrictionsCell from "./RestrictionsCell";
 import  {
@@ -257,27 +256,27 @@ console.log('raw2', rowData)
   // );
   
 
-  const StyledVariableSizeGrid = styled(VariableSizeGrid)(
-  props.isLastElement
-    ? {}
-    : {
-        overflowX: "auto", // Horizontal scroll enable
-        scrollbarWidth: "thin", // Firefox: Thin scrollbar
-        msOverflowStyle: "auto", // Edge: Show scrollbar
-        "&::-webkit-scrollbar": {
-          height: "8px", // WebKit Browsers: Set scrollbar height
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#888", // Scrollbar color
-          borderRadius: "4px",
-        },
-        "&::-webkit-scrollbar-track": {
-          backgroundColor: "#f1f1f1", // Track color
-        },
-        scrollBehavior: "smooth", // Enable smooth scrolling
+//   const StyledVariableSizeGrid = styled(VariableSizeGrid)(
+//   props.isLastElement
+//     ? {}
+//     : {
+//         overflowX: "auto", // Horizontal scroll enable
+//         scrollbarWidth: "thin", // Firefox: Thin scrollbar
+//         msOverflowStyle: "auto", // Edge: Show scrollbar
+//         "&::-webkit-scrollbar": {
+//           height: "8px", // WebKit Browsers: Set scrollbar height
+//         },
+//         "&::-webkit-scrollbar-thumb": {
+//           backgroundColor: "#888", // Scrollbar color
+//           borderRadius: "4px",
+//         },
+//         "&::-webkit-scrollbar-track": {
+//           backgroundColor: "#f1f1f1", // Track color
+//         },
+//         scrollBehavior: "smooth", // Enable smooth scrolling
         
-      }
-);
+//       }
+// );
 
  
   
