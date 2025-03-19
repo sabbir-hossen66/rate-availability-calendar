@@ -24,6 +24,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 
 
 
+
 // Define the props for the RoomRateAvailabilityCalendar component
 interface IProps {
   InventoryRefs: RefObject<Array<RefObject<VariableSizeGrid | null>>>;
@@ -44,10 +45,10 @@ interface IGridData {
   };
 }
 
-interface RateCalendarGridData {
-  rowData: IGridData[];
-  inventoryData: IRoomInventory;
-}
+// interface RateCalendarGridData {
+//   rowData: IGridData[];
+//   inventoryData: IRoomInventory;
+// }
 // Component to render the room rate availability calendar
 export default function RoomRateAvailabilityCalendar(props: IProps) {
   const theme = useTheme(); // Get the theme for styling
@@ -76,23 +77,26 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
         },
       ]),
     ];
-
     return data;
   }, [props.room_category.rate_plans]);
 
+  console.log('ha',calendarGridData[3].rate_plan?.calendar)
+  
   // Component to render each cell in the grid
   const RateCalendarGrid: React.FC<GridChildComponentProps> = memo(
     function RateCalendarGridFC({ columnIndex, rowIndex, style, data }) {
+      console.log('muri',data)
       const {
         rowData,
         inventoryData,
       }: { rowData: Array<IGridData>; inventoryData: Array<IRoomInventory> } =
         data;
-
+console.log('raw2', rowData)
       if (rowData[rowIndex].type === "inventory") {
         const inventory = inventoryData[columnIndex];
 
         if (rowData[rowIndex].row === "status") {
+          console.log('mama',props.room_category.name)
           return (
             <Box style={style}>
               <RoomInventoryStatusCell
@@ -226,14 +230,18 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
 
   const columnVirtualizer = useVirtualizer({
    //count: props.room_category.inventory_calendar.length,
-   horizontal: true, 
+  // horizontal: true, 
    count: props.room_category.inventory_calendar.length,
     getScrollElement: () => parentRef.current, 
     estimateSize: () => 150, 
-    overscan: 5, 
+    // overscan: props.room_category.inventory_calendar.length, 
+    overscan:props.room_category.inventory_calendar.length
   });
 
-   console.log('new virtualize', columnVirtualizer.getVirtualItems());
+  const virtualData = columnVirtualizer.getVirtualItems();
+
+ console.log('kuk', Array.isArray(virtualData)); // true হলে অ্যারে
+  
     console.log('parentref',parentRef.current);
 
   //   const StyledVariableSizeGrid = styled(VariableSizeGrid)(
@@ -475,11 +483,12 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
           <div
             style={{
               display: "flex",
-              width: `${columnVirtualizer.getTotalSize()}px`, // ✅ ডাইনামিক উইড্থ
-              position: "relative",
+              width: `${columnVirtualizer.getTotalSize()}`,
+                    position: "relative",
+           
             }}
           >
-            {columnVirtualizer.getVirtualItems().map((virtualColumn) => (
+            {virtualData?.map((virtualColumn) => (
               <div
                 key={virtualColumn.index}
                 style={{
@@ -491,10 +500,16 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
               >
       
                 <RateCalendarGrid
-                  rowData={calendarGridData}
-                  inventoryData={props.room_category.inventory_calendar[virtualColumn.index]}
+                  columnIndex={virtualColumn.index}
+                  rowIndex={0}
+                  style={{}}
+                  data={{
+                    rowData: calendarGridData,
+                    // rowData: calendarGridData[3].rate_plan?.calendar,
+                    inventoryData: props.room_category.inventory_calendar,
+                  }}
+                  index={virtualColumn.index}
                 />
-             
               </div>
             ))}
           </div>
@@ -502,9 +517,11 @@ export default function RoomRateAvailabilityCalendar(props: IProps) {
       )}
     </AutoSizer>
           
+
+
+          
         </Grid> 
         
-
 
       </Grid>
     </>

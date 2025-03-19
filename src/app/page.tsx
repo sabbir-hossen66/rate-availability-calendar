@@ -187,7 +187,7 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
   ).format("YYYY-MM-DD"),
 });
  
-
+console.log('heay hay hay',data?.pages[0]?.assessment)
 
   //const parentRef = useRef<HTMLDivElement | null>(null);
   //const parentMonthRef = useRef<HTMLDivElement>(null);
