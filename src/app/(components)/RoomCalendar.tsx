@@ -308,6 +308,7 @@ console.log('raw2', rowData)
         }}
       >
         <Grid
+          key={''}
           sx={{
             pl: 4,
             fontSize: "14px",
@@ -500,6 +501,7 @@ console.log('raw2', rowData)
       
                 <RateCalendarGrid
                   columnIndex={virtualColumn.index}
+                  // columnIndex={virtualColumn}
                   rowIndex={0}
                   style={{}}
                   data={{
