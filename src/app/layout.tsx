@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Technical Assessment | Grit System",
+  title: "Calender | Grit System",
   description: "A calendar to manage rate availability",
 };
 
