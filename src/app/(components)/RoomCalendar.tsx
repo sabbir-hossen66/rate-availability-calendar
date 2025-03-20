@@ -224,8 +224,7 @@ console.log('raw2', rowData)
 
 
    const parentRef = useRef<HTMLDivElement>(null);
-   //const columnCount = Math.ceil(props.room_category.inventory_calendar.length / 2);
-  // const columnWidth = 150;
+
 
   const columnVirtualizer = useVirtualizer({
    //count: props.room_category.inventory_calendar.length,
@@ -233,7 +232,6 @@ console.log('raw2', rowData)
    count: props.room_category.inventory_calendar.length,
     getScrollElement: () => parentRef.current, 
     estimateSize: () => 150, 
-    // overscan: props.room_category.inventory_calendar.length, 
     overscan:props.room_category.inventory_calendar.length
   });
 
@@ -242,42 +240,6 @@ console.log('raw2', rowData)
  console.log('kuk', Array.isArray(virtualData)); // true হলে অ্যারে
   
     console.log('parentref',parentRef.current);
-
-  //   const StyledVariableSizeGrid = styled(VariableSizeGrid)(
-  //   props.isLastElement
-  //     ? {}
-  //     : {
-  //         scrollbarWidth: "none",
-  //         msOverflowStyle: "none",
-  //         "&::-webkit-scrollbar": {
-  //           display: "none",
-  //         },
-  //       }
-  // );
-  
-
-//   const StyledVariableSizeGrid = styled(VariableSizeGrid)(
-//   props.isLastElement
-//     ? {}
-//     : {
-//         overflowX: "auto", // Horizontal scroll enable
-//         scrollbarWidth: "thin", // Firefox: Thin scrollbar
-//         msOverflowStyle: "auto", // Edge: Show scrollbar
-//         "&::-webkit-scrollbar": {
-//           height: "8px", // WebKit Browsers: Set scrollbar height
-//         },
-//         "&::-webkit-scrollbar-thumb": {
-//           backgroundColor: "#888", // Scrollbar color
-//           borderRadius: "4px",
-//         },
-//         "&::-webkit-scrollbar-track": {
-//           backgroundColor: "#f1f1f1", // Track color
-//         },
-//         scrollBehavior: "smooth", // Enable smooth scrolling
-        
-//       }
-// );
-
  
   
   return (
@@ -500,7 +462,6 @@ console.log('raw2', rowData)
               >
       
                 <RateCalendarGrid
-                  //columnIndex={virtualColumn.index}
                    columnIndex={virtualColumn.index}
                   rowIndex={0}
                   style={{}}
@@ -509,7 +470,6 @@ console.log('raw2', rowData)
                     // rowData: calendarGridData[3].rate_plan?.calendar,
                     inventoryData: props.room_category.inventory_calendar,
                   }}
-                  // index={virtualColumn.index}
                 />
               </div>
             ))}

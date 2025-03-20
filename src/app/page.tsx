@@ -104,12 +104,6 @@ const parentRef = useRef<HTMLDivElement | null>(null);
   );
 
 
-
-
-
-
-
-
   // Add event listener for wheel scroll to handle horizontal scrolling
   useEffect(() => {
     const { current: rootContainer } = rootContainerRef;
@@ -189,33 +183,11 @@ const { data, fetchNextPage, hasNextPage,isFetchingNextPage } = useRoomRateAvail
  
 console.log('heay hay hay',data?.pages[0]?.assessment)
 
-  //const parentRef = useRef<HTMLDivElement | null>(null);
-  //const parentMonthRef = useRef<HTMLDivElement>(null);
-
-
-//virtualize
-// const monthVirtualizer = useVirtualizer({
-//   horizontal: true,
-//   count: calenderMonths.length,
-//   getScrollElement: () => parentRef.current,
-//   estimateSize: (index) => calenderMonths[index][1] * 74, // Adjusting size dynamically
-//   overscan: calenderMonths.length, // To smooth out rendering
-// });
-  //    console.log('new virtualize', monthVirtualizer.getVirtualItems());
 
   const flatData = data?.pages?.flatMap((page) => page?.assessment) || []; // ✅ Ensure data exists
 
 console.log("Flat Data: ", flatData); // ✅ Debugging: Checking Data
   
-
-  // const rowVirtualizer1 = useVirtualizer({
-  // horizontal: true, // ✅ Ensure Horizontal Virtualization
-  // count: flatData.length,
-  // getScrollElement: () => parentRef.current,
-  // estimateSize: () => 400, // ✅ Item width estimate
-  // overscan: flatData.length, // ✅ Keep 2 extra items for smooth scrolling
-  // });
-  //console.log("new Item: ", rowVirtualizer1.getVirtualItems()); // ✅ Debugging: Checking Virtual Items
 
   const rowVirtualizer = useVirtualizer({
   //horizontal: true, 
@@ -235,45 +207,6 @@ console.log("Flat Data: ", flatData); // ✅ Debugging: Checking Data
   }, 50);
   }, []);
   
-
-  // console.log('new virtualize', dateVirtualizer.getVirtualItems());
-
-
-
-  // Component to render each month row in the calendar
-  // const MonthRow: React.FC<ListChildComponentProps> = memo(function MonthRowFC({
-  //   index,
-  //   style,
-  // }) {
-  //   const month = calenderMonths[index][0];
-
-  //   return (
-  //     <Box style={style}>
-  //       <Box
-  //         sx={{
-  //           px: 1,
-  //           fontSize: "12px",
-  //           fontWeight: "bold",
-  //           borderLeft: "1px solid",
-  //           borderBottom: "1px solid",
-  //           borderColor: theme.palette.divider,
-  //         }}
-  //       >
-  //         <Box
-  //           component="span"
-  //           sx={{
-  //             position: "sticky",
-  //             left: 2,
-  //             zIndex: 1,
-  //           }}
-  //         >
-  //           {month}
-  //         </Box>
-  //       </Box>
-  //     </Box>
-  //   );
-  // },
-  // areEqual);
 
   // add new
   const MonthRow: React.FC<{ index: number; style: React.CSSProperties }> = memo(
@@ -309,35 +242,6 @@ console.log("Flat Data: ", flatData); // ✅ Debugging: Checking Data
   }
 );
 
-
-  // Component to render each date row in the calendar
-  // const DateRow: React.FC<GridChildComponentProps> = memo(function DateRowFC({
-  //   columnIndex,
-  //   style,
-  // }) {
-  //   return (
-  //     <Box style={style}>
-  //       <Box
-  //         sx={{
-  //           //pr: 1,
-  //           fontSize: "14px",
-  //           textAlign: "center",
-  //           fontWeight: "bold",
-  //           borderLeft: "2px solid",
-  //           borderBottom: "1px solid",
-  //           padding:'6px',
-  //           borderColor: theme.palette.divider,
-  //         }}
-  //       >
-  //         {/* <Box>{calenderDates[columnIndex]?.format("ddd")}</Box> */}
-  //         <Box>{calenderDates[columnIndex]?.format("DD")}</Box>
-  //       </Box>
-  //     </Box>
-  //   );
-  // },
-  //   areEqual);
-  
-  // new add
   const DateRow: React.FC<{ columnIndex: number; style: React.CSSProperties }> = memo(
   function DateRowFC({ columnIndex, style }) {
     return (
@@ -439,30 +343,6 @@ console.log("Flat Data: ", flatData); // ✅ Debugging: Checking Data
                   </StyledVariableSizeList>
                 )}
               </AutoSizer> 
-
-
-
-                {/* <AutoSizer>
-                  {({ height, width }) => (
-                    
-                  <FixedSizeGrid
-                      height={height}
-                      width={width}
-                      columnCount={calenderDates.length}
-                      //columnCount={Math.ceil(calenderDates.length / 2)}
-                      columnWidth={74}
-                      rowCount={1}
-                      rowHeight={37}
-                      ref={calenderDatesRef}
-                      outerRef={mainGridContainerRef}
-                      onScroll={handleDatesScroll}
-
-                    >
-                      {DateRow}
-                    </FixedSizeGrid>
-
-                  )}
-                </AutoSizer>  */}
    <div
     ref={parentRef}
     style={{

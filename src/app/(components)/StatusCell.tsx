@@ -12,41 +12,6 @@ interface IProps {
 }
 
 
-// export default function RoomInventoryStatusCell(props: IProps) {
-//   const theme = useTheme();
-// console.log('aaaa',props.inventory)
-//   return (
-//     <>
-//       <Box
-//         sx={{
-//           width: "100%",
-//           height: "100%",
-//           display: "flex",
-//           justifyContent: "center",
-//           alignItems: "center",
-//           pr: 1,
-//           fontSize: "18px",
-//           textAlign: "right",
-//           fontWeight: "bold",
-//           borderLeft: "1px solid",
-//           borderBottom: "1px solid",
-//           borderColor: props.inventory.status
-//             ? theme.palette.success.light
-//             : theme.palette.error.dark,
-//           color: theme.palette.background.default,
-//           backgroundColor: props.inventory.status
-//             ? theme.palette.success.main
-//             : theme.palette.error.main,
-//           cursor: "pointer",
-//         }}
-//       >
-//         {props.inventory.status ? "Open" : "Close"}
-//       </Box>
-//     </>
-//   );
-// }
-
-
 export default function RoomInventoryStatusCell(props: IProps) {
   const theme = useTheme();
   console.log("aaaa", props.inventory);
