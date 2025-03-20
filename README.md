@@ -94,7 +94,56 @@ In Page.tsx Inside Grid Added this for smooth behavior
 
 # How to scroll Horizontally 
 ![Rate Availability Calendar](https://i.ibb.co.com/xKwjnCdh/table.png)
--**In this table, you can left-click and drag the mouse to the right to scroll horizontally.**
+-using tanstack virtual.
+```
+  const parentRef = React.useRef(null)
+
+  const columnVirtualizer = useVirtualizer({
+    horizontal: true,
+    count: 10000,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 100,
+    overscan: 5,
+  })
+```
+```
+ <div
+        ref={parentRef}
+        className="List"
+        style={{
+          width: `400px`,
+          height: `100px`,
+          overflow: 'auto',
+        }}
+      >
+        <div
+          style={{
+            width: `${columnVirtualizer.getTotalSize()}px`,
+            height: '100%',
+            position: 'relative',
+          }}
+        >
+          {columnVirtualizer.getVirtualItems().map((virtualColumn) => (
+            <div
+              key={virtualColumn.index}
+              className={
+                virtualColumn.index % 2 ? 'ListItemOdd' : 'ListItemEven'
+              }
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '100%',
+                width: `${virtualColumn.size}px`,
+                transform: `translateX(${virtualColumn.start}px)`,
+              }}
+            >
+              Column {virtualColumn.index}
+            </div>
+          ))}
+        </div>
+      </div>
+```
 
 ## Update DateChangePicker 
 ![Rate Availability Calendar](https://i.ibb.co.com/20MvnB0M/custom.png)
