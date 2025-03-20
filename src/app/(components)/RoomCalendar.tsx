@@ -500,8 +500,8 @@ console.log('raw2', rowData)
               >
       
                 <RateCalendarGrid
-                  columnIndex={virtualColumn.index}
-                  // columnIndex={virtualColumn}
+                  //columnIndex={virtualColumn.index}
+                   columnIndex={virtualColumn.index}
                   rowIndex={0}
                   style={{}}
                   data={{
@@ -509,7 +509,7 @@ console.log('raw2', rowData)
                     // rowData: calendarGridData[3].rate_plan?.calendar,
                     inventoryData: props.room_category.inventory_calendar,
                   }}
-                  index={virtualColumn.index}
+                  // index={virtualColumn.index}
                 />
               </div>
             ))}

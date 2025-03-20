@@ -6,7 +6,7 @@
 📂 **GitHub Repository:** [Click Here](https://github.com/sabbir-hossen66/rate-availability-calendar/tree/infine-scroll-sabbir?tab=readme-ov-file)  
 
 ### My GitHub Branch name is " infine-scroll-sabbir "
-### Demo Video [click here](https://drive.google.com/file/d/1WZvIlwIznhELEzEQOFOkEpiO9IMVb-7l/view?usp=sharing)
+### Demo Video [click here](https://drive.google.com/file/d/17wSrZi2XhoL2HWqlILvnnkHzvGeEvtsp/view?usp=sharing)
 
 This project implements an infinite scroll feature vertically using TanStack Query (`@tanstack/react-query`) and the `react-infinite-scroll-component`. The infinite scroll allows users to seamlessly load more items as they scroll down the page. and Optimize the Horizontal scroll behavior to ensure it is smooth and responsive.
 
